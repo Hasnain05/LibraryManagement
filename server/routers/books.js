@@ -4,6 +4,7 @@ const router = new express.Router()
 
 //Create Book
 router.post('/books',async (req,res)=>{
+    console.log("Hello")
     const book = new Book(req.body)
     try{
         await book.save()
