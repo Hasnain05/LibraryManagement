@@ -6,14 +6,17 @@ module.exports = mongoose.model('users',{
         required : true
     },
     email : {
-        type : String
+        type : String,
+        lowercase : true,
+        required : true
     },
     name : {
         type : String,
         required : true
     },
     age : {
-        type : Number
+        type : Number,
+        required : true
     },
     books : {
         type : Array
