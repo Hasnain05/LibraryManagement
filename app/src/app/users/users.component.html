@@ -1,0 +1,42 @@
+<div class="contai">
+    <div class="row">
+        <div class="col-3">
+            <label for="id">Id : </label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="id" [(ngModel)]="id">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <label for="name">Name :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="name" [(ngModel)]="name">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <label for="age">Age :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="age" [(ngModel)]="age">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <label for="email">Email :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="email" [(ngModel)]="email">
+        </div>
+    </div>
+</div>
+<button class="btn btn-primary" (click)="onAddUser()">Add User</button>
+<hr>
+<button class="btn btn-primary" (click)="onUserList()">User List</button>
+<div *ngIf="showUser">
+<ul *ngFor = "let user of userList">
+    <li>Name : {{user.name}} Age: {{user.age}} Email : {{user.email}} ID : {{user._id}} </li>
+</ul>
+</div>
