@@ -1,42 +1,122 @@
-<div class="contai">
-    <div class="row">
+<button class="btn btn-primary mb-2" (click)="showAddUser=!showAddUser">Register User to library</button>
+<div *ngIf="showAddUser">
+<h2>Create User</h2>
+<form (ngSubmit)="onAddUser(f1)" #f1="ngForm">
+    <div class="row form-group">
         <div class="col-3">
             <label for="id">Id : </label>
         </div>
         <div class="col-9">
-            <input type="text" id="id" [(ngModel)]="id">
+            <input type="number" id="id" class="form-control" name="_id" ngModel required>
         </div>
     </div>
-    <div class="row">
+    <div class="row form-group">
         <div class="col-3">
             <label for="name">Name :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="name" [(ngModel)]="name">
+            <input type="text" id="name" class="form-control" name="name" ngModel required>
         </div>
     </div>
-    <div class="row">
+    <div class="row form-group">
         <div class="col-3">
             <label for="age">Age :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="age" [(ngModel)]="age">
+            <input type="number" id="age" class="form-control" name="age" ngModel required>
         </div>
     </div>
-    <div class="row">
+    <div class="row form-group">
         <div class="col-3">
             <label for="email">Email :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="email" [(ngModel)]="email">
+            <input type="text" id="email" class="form-control" name="email" ngModel required>
         </div>
     </div>
+    <button class="btn btn-success" type="submit" [disabled]="!f1.valid">Add User</button>
+    <div class="alert alert-success mt-2" *ngIf="successAddAlert">
+        <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+        <strong>Success!</strong> User created
+    </div>
+    <div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+        <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+        <strong>Error!</strong> Id must be unique or network error
+    </div>
+</form>
 </div>
-<button class="btn btn-primary" (click)="onAddUser()">Add User</button>
-<hr>
-<button class="btn btn-primary" (click)="onUserList()">User List</button>
+<hr style="height:2px;border-width:0;color:gray;background-color:gray">
+<button class="btn btn-primary mb-2" (click)="showUpdateUser=!showUpdateUser">Update User details</button>
+<div *ngIf="showUpdateUser">
+<h2>Update User</h2>
+<form (ngSubmit)="onUpdateUser(f2)" #f2="ngForm">
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="id">Id : </label>
+        </div>
+        <div class="col-9">
+            <input type="number" id="id" class="form-control" name="_id" ngModel required>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="name">Name :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="name" class="form-control" name="name" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="age">Age :</label>
+        </div>
+        <div class="col-9">
+            <input type="number" id="age" class="form-control" name="age" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="email">Email :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="email" class="form-control" name="email" ngModel>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit" [disabled]="!f2.valid">Update User</button>
+    <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
+        <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
+        <strong>Success!</strong> User updated
+    </div>
+    <div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
+        <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
+        <strong>Error!</strong> User with this ID is not present or Network error
+    </div>
+</form>
+</div>
+<hr style="height:2px;border-width:0;color:gray;background-color:gray">
+<button class="btn btn-primary mb-2" (click)="onUserList()">User List</button>
 <div *ngIf="showUser">
-<ul *ngFor = "let user of userList">
-    <li>Name : {{user.name}} Age: {{user.age}} Email : {{user.email}} ID : {{user._id}} </li>
+<ul *ngFor = "let user of userList" class="list-group">
+    <li class="list-group-item list-group-item-info">
+        <b>Name : </b> {{user.name}} 
+        <b>Age : </b> {{user.age}} 
+        <b>Email : </b> {{user.email}} 
+        <b>ID : </b> {{user._id}} 
+    </li>
 </ul>
+</div>
+<hr style="height:2px;border-width:0;color:gray;background-color:gray">
+<button class="btn btn-primary mb-2" (click)="showGetUser=!showGetUser">Get User by Id</button>
+<div *ngIf="showGetUser">
+    <form (ngSubmit)="onGetUser(f3)" #f3="ngForm">
+        <div class="row form-group">
+            <div class="col-3">
+                <label for="id">Id : </label>
+            </div>
+            <div class="col-9">
+                <input type="number" id="id" class="form-control" name="_id" ngModel required>
+            </div>
+        </div>
+        <button class="btn btn-success" type="submit" [disabled]="!f3.valid">Get User</button>
+    </form>
 </div>
