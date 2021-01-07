@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 
 module.exports = mongoose.model('books',{
-    _id : {
-        type : Number,
-        required : true
-    },
     title : {
         type : String,
         required : true

@@ -17,7 +17,19 @@ router.post('/users',async (req,res)=>{
 //List All Users
 router.get('/users',async (req,res)=>{
     try{
-        const users = await User.find()
+        const match = {}
+        if(req.query.name){
+            const regex = new RegExp(req.query.name, 'i')
+            match.name = {$regex: regex}
+        }
+        if(req.query.email){
+            const regex = new RegExp(req.query.email, 'i')
+            match.email = {$regex: regex}
+        }
+        if(req.query.age){
+            match.age = req.query.age
+        }
+        const users = await User.find(match).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
         res.send(users)
     }catch(e){
         res.status(500).send(e)
@@ -78,15 +90,19 @@ router.put('/:userId/books/withdraw/:bookId',async(req,res)=>{
         const book = await Book.findById(req.params.bookId)
         const user = await User.findById(req.params.userId)
         if(!book)
-            return res.status(404).send()
+            return res.status(404).send({
+                errmsg : "Book is not found"
+            })
         if (!user)
-            return res.status(404).send()
+            return res.status(404).send({
+                errmsg : "User is not found"
+            })
         if(book.assigned)
             return res.status(404).send({
                 errmsg : "The book is already assigned"
             })
         let booksWithUser = user.books
-        booksWithUser.push(parseInt(req.params.bookId))
+        booksWithUser.push(req.params.bookId)
         const updatedUser = await User.findByIdAndUpdate(req.params.userId,{books : booksWithUser},{new : true,useFindAndModify : false})
         await Book.findByIdAndUpdate(req.params.bookId,{assigned : true},{useFindAndModify : false})
         res.send(updatedUser)

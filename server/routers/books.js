@@ -16,27 +16,23 @@ router.post('/books',async (req,res)=>{
 //List All Books
 router.get('/books',async (req,res)=>{
     try{
-        const books = await Book.find(req.query)
-        res.send(books)
-    }catch(e){
-        res.status(500).send(e)
-    }
-})
-
-//List All Assigned Books
-router.get('/books/assigned',async (req,res)=>{
-    try{
-        const books = await Book.find({assigned : true})
-        res.send(books)
-    }catch(e){
-        res.status(500).send(e)
-    }
-})
-
-//List All UnAssigned Books
-router.get('/books/unassigned',async (req,res)=>{
-    try{
-        const books = await Book.find({assigned : false})
+        const match = {}
+        if(req.query.title){
+            const regex = new RegExp(req.query.title, 'i')
+            match.title = {$regex: regex}
+        }
+        if(req.query.author){
+            const regex = new RegExp(req.query.author, 'i')
+            match.author = {$regex: regex}
+        }
+        if(req.query.genre){
+            const regex = new RegExp(req.query.genre, 'i')
+            match.genre = {$regex: regex}
+        }
+        if(req.query.assigned){
+            match.assigned = req.query.assigned
+        }
+        const books = await Book.find(match).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
         res.send(books)
     }catch(e){
         res.status(500).send(e)

@@ -14,10 +14,13 @@ export class UsersComponent implements OnInit {
   showGetUser = false;
   status = "No user created yet";
   userList;
+  userDetails;
   successAddAlert = false;
   errorAddAlert = false;
   successUpdateAlert = false;
   errorUpdateAlert = false;
+  successGetAlert = false;
+  errorGetAlert = false;
 
   constructor(private http: HttpClient) { }
 
@@ -55,9 +58,11 @@ export class UsersComponent implements OnInit {
 
   onGetUser(form:NgForm){
     const value = form.value;
-    let user;
     this.http.get("http://localhost:3000/users/"+value._id).
-    subscribe((data) => console.log(data))
+    subscribe((data) => {this.userDetails=data;
+    this.successGetAlert=true;}, (error: HttpErrorResponse) => {
+      this.errorGetAlert=true;
+    })
   }
 
 }

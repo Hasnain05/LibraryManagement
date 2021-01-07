@@ -1,14 +1,11 @@
 const mongoose = require('mongoose')
 
 module.exports = mongoose.model('users',{
-    _id : {
-        type : Number,
-        required : true
-    },
     email : {
         type : String,
         lowercase : true,
-        required : true
+        required : true,
+        unique : true
     },
     name : {
         type : String,
