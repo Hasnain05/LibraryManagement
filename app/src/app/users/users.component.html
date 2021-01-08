@@ -1,15 +1,36 @@
-<button class="btn btn-primary mb-2" (click)="showAddUser=!showAddUser">Register User to library</button>
+<h2>User List</h2>
+<div class="row">
+    <div class="col-3">
+        <input type="text" class="form-control mb-2" (input)="Search()"  [(ngModel)]="name" placeholder="name">
+    </div>
+    <div class="col-3">
+        <input type="text" class="form-control mb-2" (input)="Search()"  [(ngModel)]="email" placeholder="email">
+    </div>
+</div>
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th (click)="sort('name')">Name</th>
+            <th (click)="sort('age')">Age</th>
+            <th (click)="sort('email')">Email</th>
+            <th>Update Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of userList | orderBy : key : reverse |paginate:{itemsPerPage:5,currentPage : p}">
+            <td>{{user.name}}</td>
+            <td>{{user.age}}</td>
+            <td>{{user.email}}</td>
+            <td><a routerLink="/update" (click)="onUpdateDetail(user._id)"><button class="btn btn-danger">Update</button></a></td>
+        </tr>
+    </tbody>
+</table>
+<pagination-controls (pageChange)="p = $event" class="float-right"></pagination-controls>
+<br>
+<button class="btn btn-primary mb-2" (click)="showAddUser=!showAddUser">Click to add User</button>
 <div *ngIf="showAddUser">
     <h2>Create User</h2>
     <form (ngSubmit)="onAddUser(f1)" #f1="ngForm">
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="id">Id : </label>
-            </div>
-            <div class="col-9">
-                <input type="number" id="id" class="form-control" name="_id" ngModel required>
-            </div>
-        </div>
         <div class="row form-group">
             <div class="col-3">
                 <label for="name">Name :</label>
@@ -41,95 +62,9 @@
         </div>
         <div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
             <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
-            <strong>Error!</strong> Id must be unique or network error
+            <strong>Error!</strong> Email must be unique or network error
         </div>
     </form>
 </div>
-<hr style="height:2px;border-width:0;color:gray;background-color:gray">
-<button class="btn btn-primary mb-2" (click)="showUpdateUser=!showUpdateUser">Update User details</button>
-<div *ngIf="showUpdateUser">
-    <h2>Update User</h2>
-    <form (ngSubmit)="onUpdateUser(f2)" #f2="ngForm">
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="id">Id : </label>
-            </div>
-            <div class="col-9">
-                <input type="number" id="id" class="form-control" name="_id" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="name">Name :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="name" class="form-control" name="name" ngModel>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="age">Age :</label>
-            </div>
-            <div class="col-9">
-                <input type="number" id="age" class="form-control" name="age" ngModel>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="email">Email :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="email" class="form-control" name="email" ngModel>
-            </div>
-        </div>
-        <button class="btn btn-success" type="submit" [disabled]="!f2.valid">Update User</button>
-        <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
-            <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
-            <strong>Success!</strong> User updated
-        </div>
-        <div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
-            <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
-            <strong>Error!</strong> User with this ID is not present or Network error
-        </div>
-    </form>
-</div>
-<hr style="height:2px;border-width:0;color:gray;background-color:gray">
-<button class="btn btn-primary mb-2" (click)="onUserList()">User List</button>
-<div *ngIf="showUser">
-    <h2>List all uers</h2>
-    <ul *ngFor="let user of userList" class="list-group">
-        <li class="list-group-item list-group-item-dark">
-            <b>Name : </b> {{user.name}}
-            <b>Age : </b> {{user.age}}
-            <b>Email : </b> {{user.email}}
-            <b>ID : </b> {{user._id}}
-        </li>
-    </ul>
-</div>
-<hr style="height:2px;border-width:0;color:gray;background-color:gray">
-<button class="btn btn-primary mb-2" (click)="showGetUser=!showGetUser">Get User by Id</button>
-<div *ngIf="showGetUser">
-    <h2>Get User</h2>
-    <form (ngSubmit)="onGetUser(f3)" #f3="ngForm">
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="id">Id : </label>
-            </div>
-            <div class="col-9">
-                <input type="number" id="id" class="form-control" name="_id" ngModel required>
-            </div>
-        </div>
-        <button class="btn btn-success" type="submit" [disabled]="!f3.valid">Get User</button>
-    </form>
-    <div class="alert alert-dark mt-2" *ngIf="successGetAlert">
-        <button class="close" (click)="successGetAlert=!successGetAlert">x</button>
-        <p><strong>Id : </strong>{{userDetails._id}}</p>
-        <p><strong>Name : </strong>{{userDetails.name}}</p>
-        <p><strong>Age : </strong>{{userDetails.age}}</p>
-        <p><strong>Email : </strong>{{userDetails.email}}</p>
-    </div>
-    <div class="alert alert-danger mt-2" *ngIf="errorGetAlert">
-        <button class="close" (click)="errorGetAlert=!errorGetAlert">x</button>
-        <strong>Error!</strong> User with this ID is not present or Network error
-    </div>
-</div>
+
+

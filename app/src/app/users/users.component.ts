@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { DataService } from '../data.service'
 
 @Component({
   selector: 'app-users',
@@ -8,23 +9,35 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
-  showUser = false;
-  showAddUser = false;
-  showUpdateUser = false;
-  showGetUser = false;
-  status = "No user created yet";
   userList;
-  userDetails;
+  name;
+  email;
+  showAddUser = false;
   successAddAlert = false;
   errorAddAlert = false;
-  successUpdateAlert = false;
-  errorUpdateAlert = false;
-  successGetAlert = false;
-  errorGetAlert = false;
-
-  constructor(private http: HttpClient) { }
+  key:string='name';
+  reverse = false;
+  p:number=1;
+  constructor(private http: HttpClient,private dataService:DataService) { }
 
   ngOnInit(): void {
+    this.http.get("http://localhost:3000/users").
+      subscribe((data) => this.userList = data)
+  }
+
+  sort(key){
+    this.key = key;
+    this.reverse = !this.reverse;  
+  }
+
+  Search(){
+    let url = "http://localhost:3000/users?";
+    if(this.name)
+      url = url + "name=" + this.name + "&";
+    if(this.email)
+      url = url + "email=" + this.email;
+    this.http.get(url).
+      subscribe((data) => this.userList = data)
   }
 
   onAddUser(form:NgForm){
@@ -34,35 +47,8 @@ export class UsersComponent implements OnInit {
     });
   } 
 
-  onUserList(){
-    this.showUser = !this.showUser;
-    if(this.showUser){
-      this.http.get("http://localhost:3000/users").
-      subscribe((data) => this.userList=data)
-    }
-  } 
-
-  onUpdateUser(form:NgForm){
-    const value = form.value;
-    const user={};
-    if (value.name != "")
-      Object.assign(user, { name: value.name });
-    if (value.age != "" && value.age != null)
-      Object.assign(user, { age: value.age });
-    if (value.email != "")
-      Object.assign(user, { email: value.email });
-    this.http.put("http://localhost:3000/users/"+value._id, user).subscribe((data) => { console.log(data); this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
-      this.errorUpdateAlert = true;
-    });
+  onUpdateDetail(id){
+    this.dataService.updateId=id;
   }
-
-  onGetUser(form:NgForm){
-    const value = form.value;
-    this.http.get("http://localhost:3000/users/"+value._id).
-    subscribe((data) => {this.userDetails=data;
-    this.successGetAlert=true;}, (error: HttpErrorResponse) => {
-      this.errorGetAlert=true;
-    })
-  }
-
 }
+
