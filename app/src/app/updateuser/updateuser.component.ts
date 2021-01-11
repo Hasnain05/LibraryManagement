@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute} from '@angular/router';
 import { DataService } from '../data.service'
 
 @Component({
@@ -13,11 +14,10 @@ export class UpdateuserComponent implements OnInit {
   successUpdateAlert = false;
   errorUpdateAlert = false;
     
-  constructor(private http: HttpClient,private dataService:DataService) { }
+  constructor(private http: HttpClient,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.id=this.dataService.updateId;
-    this.dataService.updateId = "";
+    this.id = this.route.snapshot.params['id'];
   }
 
   onUpdateUser(form: NgForm) {

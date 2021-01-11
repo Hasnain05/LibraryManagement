@@ -14,6 +14,17 @@ router.post('/users',async (req,res)=>{
     }
 })
 
+//Count total users
+router.get('/users/count',async (req,res)=>{
+    try{
+        const count = await User.countDocuments();
+        res.send({count})
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
+
+
 //List All Users
 router.get('/users',async (req,res)=>{
     try{

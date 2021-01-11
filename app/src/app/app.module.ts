@@ -9,11 +9,14 @@ import { UsersComponent } from './users/users.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Ng2OrderModule } from 'ng2-order-pipe';
 import { UpdateuserComponent } from './updateuser/updateuser.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { updateLanguageServiceSourceFile } from 'typescript';
+
 
 
 const appRoutes: Routes = [
-  {path:'',component: UsersComponent},
-  {path:'update',component:UpdateuserComponent}
+  {path:'users',component: UsersComponent},
+  {path:'users/:id/edit',component:UpdateuserComponent}
 ]
 
 @NgModule({
@@ -28,7 +31,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     NgxPaginationModule,
     Ng2OrderModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

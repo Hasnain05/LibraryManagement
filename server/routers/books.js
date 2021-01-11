@@ -39,6 +39,16 @@ router.get('/books',async (req,res)=>{
     }
 })
 
+//Count total books
+router.get('/books/count',async (req,res)=>{
+    try{
+        const count = await Book.countDocuments();
+        res.send({count})
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
+
 //List Book by ID
 router.get('/books/:id',async (req,res)=>{
     try{

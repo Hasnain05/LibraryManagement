@@ -10,22 +10,27 @@
 <table class="table table-dark table-striped">
     <thead>
         <tr>
-            <th (click)="sort('name')">Name</th>
-            <th (click)="sort('age')">Age</th>
-            <th (click)="sort('email')">Email</th>
-            <th>Update Details</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let user of userList | orderBy : key : reverse |paginate:{itemsPerPage:5,currentPage : p}">
+        <tr *ngFor="let user of userList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}">
             <td>{{user.name}}</td>
             <td>{{user.age}}</td>
             <td>{{user.email}}</td>
-            <td><a routerLink="/update" (click)="onUpdateDetail(user._id)"><button class="btn btn-danger">Update</button></a></td>
+            <td>
+                <a [routerLink]="['/users',user._id,'edit']"><button class="btn btn-primary mr-2">Edit</button></a>
+                <button type="button" class="btn btn-danger" (click)="onOpenModal(user._id)">
+                    Delete
+                </button>
+            </td>
         </tr>
     </tbody>
 </table>
-<pagination-controls (pageChange)="p = $event" class="float-right"></pagination-controls>
+<pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
 <button class="btn btn-primary mb-2" (click)="showAddUser=!showAddUser">Click to add User</button>
 <div *ngIf="showAddUser">
@@ -66,5 +71,21 @@
         </div>
     </form>
 </div>
+<hr>
+
+<!-- Confirmation for delete -->
+<div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          Are you sure you want to delete?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
+          <button type="button" class="btn btn-danger" (click)="onDeleteUser()">Delete User</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
