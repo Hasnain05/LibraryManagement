@@ -11,19 +11,28 @@ import { Ng2OrderModule } from 'ng2-order-pipe';
 import { UpdateuserComponent } from './updateuser/updateuser.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { updateLanguageServiceSourceFile } from 'typescript';
+import { BooksComponent } from './books/books.component';
+import { UpdatebookComponent } from './updatebook/updatebook.component';
+import { WithdrawdepositComponent } from './withdrawdeposit/withdrawdeposit.component';
 
 
 
 const appRoutes: Routes = [
   {path:'users',component: UsersComponent},
-  {path:'users/:id/edit',component:UpdateuserComponent}
+  {path:'books',component: BooksComponent},
+  {path:'users/:id/edit',component:UpdateuserComponent},
+  {path:'books/:id/edit',component:UpdatebookComponent},
+  {path:'users/:id/books',component:WithdrawdepositComponent}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
     UsersComponent,
-    UpdateuserComponent
+    UpdateuserComponent,
+    UpdatebookComponent,
+    BooksComponent,
+    WithdrawdepositComponent
   ],
   imports: [
     BrowserModule,

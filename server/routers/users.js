@@ -17,7 +17,19 @@ router.post('/users',async (req,res)=>{
 //Count total users
 router.get('/users/count',async (req,res)=>{
     try{
-        const count = await User.countDocuments();
+        const match = {}
+        if(req.query.name){
+            const regex = new RegExp(req.query.name, 'i')
+            match.name = {$regex: regex}
+        }
+        if(req.query.email){
+            const regex = new RegExp(req.query.email, 'i')
+            match.email = {$regex: regex}
+        }
+        if(req.query.age){
+            match.age = req.query.age
+        }
+        const count = await User.countDocuments(match);
         res.send({count})
     }catch(e){
         res.status(500).send(e)
@@ -60,7 +72,7 @@ router.get('/users/:id',async(req,res)=>{
 })
 
 //List all the booksID withdrawn by the user
-router.get('/:id/books',async (req,res)=>{
+/* router.get('/:id/books',async (req,res)=>{
     try{
         const user = await User.findById(req.params.id)
         if(!user)
@@ -69,7 +81,7 @@ router.get('/:id/books',async (req,res)=>{
     }catch(e){
         res.status(500).send(e)
     }
-})
+}) */
 
 //Delete user account
 router.delete('/users/:id',async(req,res)=>{
@@ -112,11 +124,8 @@ router.put('/:userId/books/withdraw/:bookId',async(req,res)=>{
             return res.status(404).send({
                 errmsg : "The book is already assigned"
             })
-        let booksWithUser = user.books
-        booksWithUser.push(req.params.bookId)
-        const updatedUser = await User.findByIdAndUpdate(req.params.userId,{books : booksWithUser},{new : true,useFindAndModify : false})
-        await Book.findByIdAndUpdate(req.params.bookId,{assigned : true},{useFindAndModify : false})
-        res.send(updatedUser)
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : req.params.userId},{new:true,useFindAndModify : false})
+        res.send(updatedBook)
     }catch(e){
         res.status(400).send(e)
     }
@@ -135,16 +144,8 @@ router.put('/:userId/books/deposit/:bookId',async(req,res)=>{
             return res.status(404).send({
                 errmsg: "The book is already deposited in library"
             })
-        const index = user.books.indexOf(req.params.bookId)  
-        if(index<0)
-            return res.status(404).send({
-                errmsg: "The book is not with the current user"
-            })
-        let booksWithUser = user.books
-        booksWithUser.splice(index,1)
-        const updatedUser = await User.findByIdAndUpdate(req.params.userId,{books : booksWithUser},{new : true,useFindAndModify : false})
-        await Book.findByIdAndUpdate(req.params.bookId,{assigned : false},{useFindAndModify : false})
-        res.send(updatedUser)
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : null},{new:true,useFindAndModify : false})
+        res.send(updatedBook)
     }catch(e){
         res.status(400).send(e)
     }

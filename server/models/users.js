@@ -14,8 +14,5 @@ module.exports = mongoose.model('users',{
     age : {
         type : Number,
         required : true
-    },
-    books : {
-        type : Array
     }
 })

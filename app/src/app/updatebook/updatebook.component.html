@@ -1,0 +1,36 @@
+<h2>Edit book</h2>
+<form (ngSubmit)="onUpdateBook(f)" #f="ngForm">
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="title">Title :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="title" class="form-control" name="title" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="author">Author :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="author" class="form-control" name="author" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="genre">Genre :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="genre" class="form-control" name="genre" ngModel>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit" [disabled]="!f.valid">Update Book</button>
+    <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
+        <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
+        <strong>Success!</strong> Book updated
+    </div>
+    <div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
+        <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
+        <strong>Error!</strong> Network error
+    </div>
+</form>

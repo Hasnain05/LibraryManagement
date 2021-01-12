@@ -36,11 +36,18 @@ export class UsersComponent implements OnInit {
 
   Search(){
     let url = "http://localhost:3000/users?";
-    if(this.name)
+    let countUrl = "http://localhost:3000/users/count?";
+    if(this.name){
       url = url + "name=" + this.name;
-    if(this.email)
+      countUrl = countUrl + "name=" + this.name;
+    } 
+    if(this.email){
       url = url + "&email=" + this.email;
-      url = url + "&limit=5"
+      countUrl = countUrl + "&email=" + this.email;
+    }
+    this.http.get(countUrl).
+      subscribe((data) => this.assignCount(data))
+    url = url + "&limit=5"
     this.http.get(url).
       subscribe((data) => this.userList = data)
     this.p = 1
@@ -56,7 +63,14 @@ export class UsersComponent implements OnInit {
   onPageChanged(page){
     this.p = page
     let skip = (page-1)*5;
-    this.http.get("http://localhost:3000/users?limit=5&skip="+skip).
+    let url = "http://localhost:3000/users?limit=5&skip=" + skip;
+    if(this.name){
+      url = url + "&name=" + this.name;
+    } 
+    if(this.email){
+      url = url + "&email=" + this.email;
+    }
+    this.http.get(url).
       subscribe((data) => this.userList = data)
   }
   

@@ -42,7 +42,23 @@ router.get('/books',async (req,res)=>{
 //Count total books
 router.get('/books/count',async (req,res)=>{
     try{
-        const count = await Book.countDocuments();
+        const match = {}
+        if(req.query.title){
+            const regex = new RegExp(req.query.title, 'i')
+            match.title = {$regex: regex}
+        }
+        if(req.query.author){
+            const regex = new RegExp(req.query.author, 'i')
+            match.author = {$regex: regex}
+        }
+        if(req.query.genre){
+            const regex = new RegExp(req.query.genre, 'i')
+            match.genre = {$regex: regex}
+        }
+        if(req.query.assigned){
+            match.assigned = req.query.assigned
+        }
+        const count = await Book.countDocuments(match);
         res.send({count})
     }catch(e){
         res.status(500).send(e)

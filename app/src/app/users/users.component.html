@@ -22,6 +22,7 @@
             <td>{{user.age}}</td>
             <td>{{user.email}}</td>
             <td>
+                <a [routerLink]="['/users',user._id,'books']"><button class="btn btn-success mr-2">Deposit/Withdraw</button></a>
                 <a [routerLink]="['/users',user._id,'edit']"><button class="btn btn-primary mr-2">Edit</button></a>
                 <button type="button" class="btn btn-danger" (click)="onOpenModal(user._id)">
                     Delete
