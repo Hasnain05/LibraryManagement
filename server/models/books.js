@@ -11,6 +11,10 @@ module.exports = mongoose.model('books',{
         required : true
     },
     assigned : {
+        type : Boolean,
+        default : false,
+    },
+    user : {
         type : ObjectID,
         default : null,
     },

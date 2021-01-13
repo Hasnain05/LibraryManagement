@@ -15,6 +15,7 @@ export class BooksComponent implements OnInit {
   showAddBook = false;
   successAddAlert = false;
   errorAddAlert = false;
+  errorDeleteAlert = false;
   p:number=1;
   countObject;
   numberOfItems;
@@ -42,7 +43,9 @@ export class BooksComponent implements OnInit {
   } 
 
   onDeleteBook(){
-    this.http.delete("http://localhost:3000/books/"+this.deleteId).subscribe((data)=>{console.log(data);})
+    this.http.delete("http://localhost:3000/books/"+this.deleteId).subscribe((data)=>{console.log(data);},(error: HttpErrorResponse) => {
+      this.errorDeleteAlert = true;
+    });
     this.Search();
     this.display='none';
   }

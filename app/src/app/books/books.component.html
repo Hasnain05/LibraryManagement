@@ -10,6 +10,10 @@
         <input type="text" class="form-control mb-2" (input)="Search()" [(ngModel)]="genre" placeholder="genre">
     </div>
 </div>
+<div class="alert alert-danger mt-2" *ngIf="errorDeleteAlert">
+    <button class="close" (click)="errorDeleteAlert=!errorDeleteAlert">x</button>
+    <strong>Error!</strong> The book is assigned to a user
+</div>
 <table class="table table-dark table-striped">
     <thead>
         <tr>

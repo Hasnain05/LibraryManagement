@@ -20,6 +20,7 @@ export class UsersComponent implements OnInit {
   numberOfItems;
   display='none';
   deleteId;
+  errorDeleteAlert = false;
 
   constructor(private http: HttpClient,private dataService:DataService) { }
 
@@ -75,7 +76,9 @@ export class UsersComponent implements OnInit {
   }
   
   onDeleteUser(){
-    this.http.delete("http://localhost:3000/users/"+this.deleteId).subscribe((data)=>{console.log(data);})
+    this.http.delete("http://localhost:3000/users/"+this.deleteId).subscribe((data)=>{console.log(data);},(error: HttpErrorResponse) => {
+      this.errorDeleteAlert = true;
+    })
     this.Search();
     this.display='none';
   }

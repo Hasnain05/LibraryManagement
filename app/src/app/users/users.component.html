@@ -7,6 +7,10 @@
         <input type="text" class="form-control mb-2" (input)="Search()"  [(ngModel)]="email" placeholder="email">
     </div>
 </div>
+<div class="alert alert-danger mt-2" *ngIf="errorDeleteAlert">
+    <button class="close" (click)="errorDeleteAlert=!errorDeleteAlert">x</button>
+    <strong>Error!</strong> User must deposit books first
+</div>
 <table class="table table-dark table-striped">
     <thead>
         <tr>
@@ -77,16 +81,16 @@
 <!-- Confirmation for delete -->
 <div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          Are you sure you want to delete?
+        <div class="modal-content">
+            <div class="modal-body">
+                Are you sure you want to delete?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="onDeleteUser()">Delete User</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
-          <button type="button" class="btn btn-danger" (click)="onDeleteUser()">Delete User</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
 

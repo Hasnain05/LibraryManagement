@@ -1,13 +1,13 @@
-<h2>Books available with user</h2>
+<h2>Books with User</h2>
 <div class="row">
     <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="Search()" [(ngModel)]="title" placeholder="title">
+        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="titleU" placeholder="title">
     </div>
     <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="Search()" [(ngModel)]="author" placeholder="author">
+        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="authorU" placeholder="author">
     </div>
     <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="Search()" [(ngModel)]="genre" placeholder="genre">
+        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="genreU" placeholder="genre">
     </div>
 </div>
 <table class="table table-dark table-striped">
@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let book of bookList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}">
+        <tr *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}">
             <td>{{book.title}}</td>
             <td>{{book.author}}</td>
             <td>{{book.genre}}</td>
@@ -32,5 +32,73 @@
         </tr>
     </tbody>
 </table>
-<pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
+<pagination-controls id="userbooks" (pageChange)="onPageChangedU($event)" class="float-right"></pagination-controls>
 <br>
+<br>
+
+<h2>Books in Library</h2>
+<div class="row">
+    <div class="col-3">
+        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="titleL" placeholder="title">
+    </div>
+    <div class="col-3">
+        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="authorL" placeholder="author">
+    </div>
+    <div class="col-3">
+        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="genreL" placeholder="genre">
+    </div>
+</div>
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}">
+            <td>{{book.title}}</td>
+            <td>{{book.author}}</td>
+            <td>{{book.genre}}</td>
+            <td>
+                <button type="button" class="btn btn-success" (click)="onOpenModalL(book._id)">
+                    Withdraw
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<pagination-controls id="libbooks" (pageChange)="onPageChangedL($event)" class="float-right"></pagination-controls>
+<br>
+
+<!-- Confirmation for deposit -->
+<div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                Are you sure you want to deposit?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="onDepositUser()">Deposit Book</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation for withdrawl -->
+<div class="modal" [ngStyle]="{'display':displayL}" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                Are you sure you want to withdraw?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="onCloseModalL()">Close</button>
+                <button type="button" class="btn btn-success" (click)="onWithdrawUser()">Withdraw Book</button>
+            </div>
+        </div>
+    </div>
+</div>

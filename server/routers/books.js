@@ -32,6 +32,9 @@ router.get('/books',async (req,res)=>{
         if(req.query.assigned){
             match.assigned = req.query.assigned
         }
+        if(req.query.user){
+            match.user = req.query.user
+        }
         const books = await Book.find(match).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
         res.send(books)
     }catch(e){
@@ -58,6 +61,9 @@ router.get('/books/count',async (req,res)=>{
         if(req.query.assigned){
             match.assigned = req.query.assigned
         }
+        if(req.query.user){
+            match.user = req.query.user
+        }
         const count = await Book.countDocuments(match);
         res.send({count})
     }catch(e){
@@ -80,9 +86,12 @@ router.get('/books/:id',async (req,res)=>{
 //Remove book from library
 router.delete('/books/:id',async(req,res)=>{
     try{
-        const book = await Book.findByIdAndDelete(req.params.id,{useFindAndModify : false})
+        const book = await Book.findById(req.params.id)
         if(!book)
             return res.status(404).send()
+        if(book.assigned)
+            return res.status(400).send()
+        await Book.findByIdAndDelete(req.params.id,{useFindAndModify : false})
         res.send(book)
     }catch(e){
         res.status(500).send(e)

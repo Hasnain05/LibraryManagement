@@ -86,6 +86,9 @@ router.get('/users/:id',async(req,res)=>{
 //Delete user account
 router.delete('/users/:id',async(req,res)=>{
     try{
+        const books = await Book.find({user : req.params.id}) 
+        if(books.length>0)
+            return res.status(400).send()
         const user = await User.findByIdAndRemove(req.params.id,{useFindAndModify : false})
         if(!user)
             return res.status(404).send()
@@ -124,7 +127,7 @@ router.put('/:userId/books/withdraw/:bookId',async(req,res)=>{
             return res.status(404).send({
                 errmsg : "The book is already assigned"
             })
-        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : req.params.userId},{new:true,useFindAndModify : false})
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : true,user : req.params.userId},{new:true,useFindAndModify : false})
         res.send(updatedBook)
     }catch(e){
         res.status(400).send(e)
@@ -144,7 +147,7 @@ router.put('/:userId/books/deposit/:bookId',async(req,res)=>{
             return res.status(404).send({
                 errmsg: "The book is already deposited in library"
             })
-        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : null},{new:true,useFindAndModify : false})
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : false,user : null},{new:true,useFindAndModify : false})
         res.send(updatedBook)
     }catch(e){
         res.status(400).send(e)
