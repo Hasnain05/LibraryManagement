@@ -5,7 +5,7 @@
             <label for="title">Title :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="title" class="form-control" name="title" ngModel>
+            <input type="text" id="title" class="form-control" [value]="title" name="title" ngModel>
         </div>
     </div>
     <div class="row form-group">
@@ -13,7 +13,7 @@
             <label for="author">Author :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="author" class="form-control" name="author" ngModel>
+            <input type="text" id="author" class="form-control" [value]="author" name="author" ngModel>
         </div>
     </div>
     <div class="row form-group">
@@ -21,7 +21,7 @@
             <label for="genre">Genre :</label>
         </div>
         <div class="col-9">
-            <input type="text" id="genre" class="form-control" name="genre" ngModel>
+            <input type="text" id="genre" class="form-control" [value]="genre" name="genre" ngModel>
         </div>
     </div>
     <button class="btn btn-success" type="submit" [disabled]="!f.valid">Update Book</button>
@@ -34,3 +34,5 @@
         <strong>Error!</strong> Network error
     </div>
 </form>
+<br>
+<a [routerLink]="['/users']"><button class="btn btn-info">Back</button></a>

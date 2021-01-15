@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { BooksService } from '../books.service';
 
 @Component({
   selector: 'app-books',
@@ -16,19 +17,23 @@ export class BooksComponent implements OnInit {
   successAddAlert = false;
   errorAddAlert = false;
   errorDeleteAlert = false;
+  successDeleteAlert = false;
   p:number=1;
   countObject;
   numberOfItems;
   display='none';
   deleteId;
 
-  constructor(private http: HttpClient) { }
+  constructor(private booksService: BooksService) { }
 
   ngOnInit(): void {
-    this.http.get("http://localhost:3000/books/count").
+    let url = "http://localhost:3000/books?limit=5";
+    let countUrl = "http://localhost:3000/books/count";
+    this.booksService.getBook(countUrl).
       subscribe((data) => this.assignCount(data))
-    this.http.get("http://localhost:3000/books?limit=5").
+    this.booksService.getBook(url).
       subscribe((data) => this.bookList = data)
+    this.p = 1;
   }
 
   assignCount(data){
@@ -36,17 +41,16 @@ export class BooksComponent implements OnInit {
   }
 
   onAddBook(form:NgForm){
-    const user = form.value;
-    this.http.post("http://localhost:3000/books", user).subscribe((data) => { console.log(data); this.successAddAlert = true; }, (error: HttpErrorResponse) => {
+    const book = form.value;
+    this.booksService.addBook(book).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
   } 
 
   onDeleteBook(){
-    this.http.delete("http://localhost:3000/books/"+this.deleteId).subscribe((data)=>{console.log(data);},(error: HttpErrorResponse) => {
+    this.booksService.deleteBook(this.deleteId).subscribe((data)=>{this.ngOnInit(); this.successDeleteAlert = true; },(error: HttpErrorResponse) => {
       this.errorDeleteAlert = true;
     });
-    this.Search();
     this.display='none';
   }
 
@@ -65,10 +69,10 @@ export class BooksComponent implements OnInit {
       url = url + "&genre=" + this.genre;
       countUrl = countUrl + "&genre=" + this.genre;
     }
-    this.http.get(countUrl).
+    this.booksService.getBook(countUrl).
       subscribe((data) => this.assignCount(data))
     url = url + "&limit=5"
-    this.http.get(url).
+    this.booksService.getBook(url).
       subscribe((data) => this.bookList = data)
     this.p = 1
   }
@@ -95,7 +99,7 @@ export class BooksComponent implements OnInit {
     if(this.genre){
       url = url + "&genre=" + this.genre;
     }
-    this.http.get(url).
+    this.booksService.getBook(url).
       subscribe((data) => this.bookList = data)
   }
 

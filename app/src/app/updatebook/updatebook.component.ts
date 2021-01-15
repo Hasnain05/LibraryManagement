@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BooksService } from '../books.service';
 
 @Component({
   selector: 'app-updatebook',
@@ -10,13 +11,28 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class UpdatebookComponent implements OnInit {
   id;
+  title;
+  author;
+  genre;
   successUpdateAlert = false;
   errorUpdateAlert = false;
 
-  constructor(private http: HttpClient,private route:ActivatedRoute) { }
+  constructor(private booksService : BooksService,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
+    let url = "http://localhost:3000/books/" + this.id;
+    this.booksService.updateBook(url,{}).subscribe((data) => { 
+      this.setTextField(data);
+     }, (error: HttpErrorResponse) => {
+      
+    });
+  }
+
+  setTextField(data){
+    this.title = data.title;
+    this.author = data.author;
+    this.genre = data.genre;
   }
 
   onUpdateBook(form: NgForm) {
@@ -28,7 +44,8 @@ export class UpdatebookComponent implements OnInit {
       Object.assign(book, { author: value.author });
     if (value.genre != "")
       Object.assign(book, { genre: value.genre });
-    this.http.put("http://localhost:3000/books/" + this.id, book).subscribe((data) => { console.log(data); this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    let url = "http://localhost:3000/books/" + this.id;
+    this.booksService.updateBook(url,book).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }

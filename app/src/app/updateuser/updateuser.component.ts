@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute} from '@angular/router';
 import { DataService } from '../data.service'
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-updateuser',
@@ -11,13 +12,28 @@ import { DataService } from '../data.service'
 })
 export class UpdateuserComponent implements OnInit {
   id;
+  name;
+  age;
+  email;
   successUpdateAlert = false;
   errorUpdateAlert = false;
     
-  constructor(private http: HttpClient,private route:ActivatedRoute) { }
+  constructor(private userService : UsersService,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
+    let url = "http://localhost:3000/users/" + this.id;
+    this.userService.updateUser(url,{}).subscribe((data) => { 
+      this.setTextField(data);
+     }, (error: HttpErrorResponse) => {
+      
+    });
+  }
+
+  setTextField(data){
+    this.name = data.name;
+    this.age = data.age;
+    this.email = data.email;
   }
 
   onUpdateUser(form: NgForm) {
@@ -29,7 +45,8 @@ export class UpdateuserComponent implements OnInit {
       Object.assign(user, { age: value.age });
     if (value.email != "")
       Object.assign(user, { email: value.email });
-    this.http.put("http://localhost:3000/users/" + this.id, user).subscribe((data) => { console.log(data); this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    let url = "http://localhost:3000/users/" + this.id;
+    this.userService.updateUser(url,user).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }

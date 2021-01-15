@@ -11,6 +11,10 @@
     <button class="close" (click)="errorDeleteAlert=!errorDeleteAlert">x</button>
     <strong>Error!</strong> User must deposit books first
 </div>
+<div class="alert alert-success mt-2" *ngIf="successDeleteAlert">
+    <button class="close" (click)="successDeleteAlert=!successDeleteAlert">x</button>
+    <strong>Success!</strong> User is deleted
+</div>
 <table class="table table-dark table-striped">
     <thead>
         <tr>

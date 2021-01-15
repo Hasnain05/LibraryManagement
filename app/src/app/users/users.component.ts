@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { DataService } from '../data.service'
+import { UsersService } from '../users.service';
+
 
 @Component({
   selector: 'app-users',
@@ -21,14 +22,18 @@ export class UsersComponent implements OnInit {
   display='none';
   deleteId;
   errorDeleteAlert = false;
+  successDeleteAlert = false;
 
-  constructor(private http: HttpClient,private dataService:DataService) { }
+  constructor(private usersService: UsersService) { }
 
   ngOnInit(): void {
-    this.http.get("http://localhost:3000/users/count").
+    let url = "http://localhost:3000/users?limit=5";
+    let countUrl = "http://localhost:3000/users/count";
+    this.usersService.getUser(countUrl).
       subscribe((data) => this.assignCount(data))
-    this.http.get("http://localhost:3000/users?limit=5").
+    this.usersService.getUser(url).
       subscribe((data) => this.userList = data)
+    this.p = 1;
   }
 
   assignCount(data){
@@ -46,17 +51,17 @@ export class UsersComponent implements OnInit {
       url = url + "&email=" + this.email;
       countUrl = countUrl + "&email=" + this.email;
     }
-    this.http.get(countUrl).
+    this.usersService.getUser(countUrl).
       subscribe((data) => this.assignCount(data))
     url = url + "&limit=5"
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.userList = data)
     this.p = 1
   }
 
   onAddUser(form:NgForm){
     const user = form.value;
-    this.http.post("http://localhost:3000/users", user).subscribe((data) => { console.log(data); this.successAddAlert = true; }, (error: HttpErrorResponse) => {
+    this.usersService.addUser(user).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
   } 
@@ -71,15 +76,14 @@ export class UsersComponent implements OnInit {
     if(this.email){
       url = url + "&email=" + this.email;
     }
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.userList = data)
   }
   
   onDeleteUser(){
-    this.http.delete("http://localhost:3000/users/"+this.deleteId).subscribe((data)=>{console.log(data);},(error: HttpErrorResponse) => {
+    this.usersService.deleteUser(this.deleteId).subscribe((data)=>{this.ngOnInit();this.successDeleteAlert=true;},(error: HttpErrorResponse) => {
       this.errorDeleteAlert = true;
     })
-    this.Search();
     this.display='none';
   }
 

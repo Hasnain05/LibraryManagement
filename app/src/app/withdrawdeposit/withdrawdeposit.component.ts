@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-withdrawdeposit',
@@ -29,18 +30,24 @@ export class WithdrawdepositComponent implements OnInit {
   withdrawId;
 
 
-  constructor(private http: HttpClient,private route:ActivatedRoute) { }
+  constructor(private route:ActivatedRoute, private usersService:UsersService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    this.http.get("http://localhost:3000/books/count?assigned=false").
+    let countUrlL = "http://localhost:3000/books/count?assigned=false";
+    let urlL = "http://localhost:3000/books?assigned=false&limit=5";
+    let countUrlU = "http://localhost:3000/books/count?user=" + this.id;
+    let urlU = "http://localhost:3000/books?user=" + this.id + "&limit=5";
+    this.usersService.getUser(countUrlL).
       subscribe((data) => this.assignCountL(data))
-    this.http.get("http://localhost:3000/books?assigned=false&limit=5").
+    this.usersService.getUser(urlL).
       subscribe((data) => this.bookListLibrary = data)
-    this.http.get("http://localhost:3000/books/count?user=" + this.id).
+    this.usersService.getUser(countUrlU).
       subscribe((data) => this.assignCountU(data))
-    this.http.get("http://localhost:3000/books?user=" + this.id + "&limit=5").
+    this.usersService.getUser(urlU).
       subscribe((data) => this.bookListUser = data)
+    this.pU = 1;
+    this.pL = 1;
   }
 
   assignCountU(data){
@@ -58,10 +65,8 @@ export class WithdrawdepositComponent implements OnInit {
 
   onDepositUser(){
     let url = "http://localhost:3000/"+this.id+"/books/deposit/"+this.depositId;
-    this.http.put(url,{}).subscribe((data)=>{console.log(data);})
+    this.usersService.updateUser(url,{}).subscribe((data)=>{this.ngOnInit();})
     this.display='none';
-    this.SearchU();
-    this.SearchL();
   }
 
   onCloseModal(){
@@ -75,10 +80,9 @@ export class WithdrawdepositComponent implements OnInit {
 
   onWithdrawUser(){
     let url = "http://localhost:3000/"+this.id+"/books/withdraw/"+this.withdrawId;
-    this.http.put(url,{}).subscribe((data)=>{console.log(data);})
+    this.usersService.updateUser(url,{}).subscribe((data)=>{this.ngOnInit();})
     this.displayL='none';
-    this.SearchL();
-    this.SearchU();
+    
   }
 
   onCloseModalL(){
@@ -100,10 +104,10 @@ export class WithdrawdepositComponent implements OnInit {
       url = url + "&genre=" + this.genreU;
       countUrl = countUrl + "&genre=" + this.genreU;
     }
-    this.http.get(countUrl).
+    this.usersService.getUser(countUrl).
       subscribe((data) => this.assignCountU(data))
     url = url + "&limit=5"
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.bookListUser = data)
     this.pU = 1
   }
@@ -123,10 +127,10 @@ export class WithdrawdepositComponent implements OnInit {
       url = url + "&genre=" + this.genreL;
       countUrl = countUrl + "&genre=" + this.genreL;
     }
-    this.http.get(countUrl).
+    this.usersService.getUser(countUrl).
       subscribe((data) => this.assignCountL(data))
     url = url + "&limit=5"
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.bookListLibrary = data)
     this.pL = 1
   }
@@ -144,7 +148,7 @@ export class WithdrawdepositComponent implements OnInit {
     if(this.genreU){
       url = url + "&genre=" + this.genreU;
     }
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.bookListUser = data)
   }
 
@@ -161,7 +165,7 @@ export class WithdrawdepositComponent implements OnInit {
     if(this.genreL){
       url = url + "&genre=" + this.genreL;
     }
-    this.http.get(url).
+    this.usersService.getUser(url).
       subscribe((data) => this.bookListLibrary = data)
   }
 }
