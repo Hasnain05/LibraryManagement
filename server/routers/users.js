@@ -1,7 +1,9 @@
 const express = require('express')
 const User = require('../models/users')
 const Book = require('../models/books')
+const userAuth = require('../middleware/userauth')
 const router = new express.Router()
+
 
 //Create User
 router.post('/users',async (req,res)=>{
@@ -11,6 +13,30 @@ router.post('/users',async (req,res)=>{
         res.status(201).send(user)
     }catch(e){
         res.status(400).send(e)
+    }
+})
+
+//Login User
+router.post('/login/user',async (req,res)=>{
+    try{
+        const user = await User.findByCredentials(req.body.email,req.body.password)
+        const token = await user.generateAuthToken()
+        res.send({user,token})
+    }catch(e){
+        res.status(401).send(e)
+    }
+})
+
+//Logout User
+router.post('/logout/user',userAuth,async(req,res)=>{
+    try{
+        req.user.tokens = req.user.tokens.filter((token)=>{
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    }catch(e){
+        res.status(500).send()
     }
 })
 
@@ -59,13 +85,10 @@ router.get('/users',async (req,res)=>{
     }
 })
 
-//List User by ID
-router.get('/users/:id',async(req,res)=>{
+//Get User
+router.get('/users/me',userAuth,async(req,res)=>{
     try{
-        const user = await User.findById(req.params.id)
-        if(!user)
-            return res.status(404).send()
-        res.send(user)
+        res.send(req.user)
     }catch(e){
         res.status(500).send(e)
     }
@@ -95,6 +118,16 @@ router.delete('/users/:id',async(req,res)=>{
         res.send(user)
     }catch(e){
         res.status(500).send(e)
+    }
+})
+
+
+router.put('/users/me',userAuth,async(req,res)=>{
+    try{
+        const user = await User.findByIdAndUpdate(req.user._id,req.body,{new : true,useFindAndModify : false})
+        res.send(user)
+    }catch(e){
+        res.status(400).send(e)
     }
 })
 
