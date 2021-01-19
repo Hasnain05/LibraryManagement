@@ -8,4 +8,8 @@ import { Component } from '@angular/core';
 export class AppComponent {
   name = 'Library Management App';
   isCollapsed = false;
+
+  onActivate(e){
+    console.log(e);
+  }
 }

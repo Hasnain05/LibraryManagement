@@ -2,11 +2,12 @@ const express = require('express')
 const User = require('../models/users')
 const Book = require('../models/books')
 const userAuth = require('../middleware/userauth')
+const adminAuth = require('../middleware/adminauth')
 const router = new express.Router()
 
 
 //Create User
-router.post('/users',async (req,res)=>{
+router.post('/users',adminAuth,async (req,res)=>{
     const user = new User(req.body)
     try{
         await user.save()
@@ -41,7 +42,7 @@ router.post('/logout/user',userAuth,async(req,res)=>{
 })
 
 //Count total users
-router.get('/users/count',async (req,res)=>{
+router.get('/users/count',adminAuth,async (req,res)=>{
     try{
         const match = {}
         if(req.query.name){
@@ -64,7 +65,7 @@ router.get('/users/count',async (req,res)=>{
 
 
 //List All Users
-router.get('/users',async (req,res)=>{
+router.get('/users',adminAuth,async (req,res)=>{
     try{
         const match = {}
         if(req.query.name){
@@ -85,7 +86,7 @@ router.get('/users',async (req,res)=>{
     }
 })
 
-//Get User
+//Get User by token
 router.get('/users/me',userAuth,async(req,res)=>{
     try{
         res.send(req.user)
@@ -94,25 +95,13 @@ router.get('/users/me',userAuth,async(req,res)=>{
     }
 })
 
-//List all the booksID withdrawn by the user
-/* router.get('/:id/books',async (req,res)=>{
+//Delete user by token
+router.delete('/users/me',userAuth,async(req,res)=>{
     try{
-        const user = await User.findById(req.params.id)
-        if(!user)
-            return res.status(404).send()
-        res.send(user.books)
-    }catch(e){
-        res.status(500).send(e)
-    }
-}) */
-
-//Delete user account
-router.delete('/users/:id',async(req,res)=>{
-    try{
-        const books = await Book.find({user : req.params.id}) 
+        const books = await Book.find({user : req.user._id}) 
         if(books.length>0)
             return res.status(400).send()
-        const user = await User.findByIdAndRemove(req.params.id,{useFindAndModify : false})
+        const user = await User.findByIdAndRemove(req.user._id,{useFindAndModify : false})
         if(!user)
             return res.status(404).send()
         res.send(user)
@@ -121,7 +110,20 @@ router.delete('/users/:id',async(req,res)=>{
     }
 })
 
+//Delete user account
+router.delete('/users/:id',adminAuth,async(req,res)=>{
+    try{
+        const books = await Book.find({user : req.params.id}) 
+        if(books.length>0)
+            return res.status(400).send()
+        const user = await User.findByIdAndRemove(req.params.id,{useFindAndModify : false})
+        res.send(user)
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
 
+//Update user details by token
 router.put('/users/me',userAuth,async(req,res)=>{
     try{
         const user = await User.findByIdAndUpdate(req.user._id,req.body,{new : true,useFindAndModify : false})
@@ -131,8 +133,8 @@ router.put('/users/me',userAuth,async(req,res)=>{
     }
 })
 
-//Update user detailes
-router.put('/users/:id',async(req,res)=>{
+//Update user details
+router.put('/users/:id',adminAuth,async(req,res)=>{
     try{
         const user = await User.findByIdAndUpdate(req.params.id,req.body,{new : true,useFindAndModify : false})
         if(!user)
@@ -143,8 +145,27 @@ router.put('/users/:id',async(req,res)=>{
     }
 })
 
+//Withdraw book from library by token
+router.put('/me/books/withdraw/:bookId',userAuth,async(req,res)=>{
+    try{
+        const book = await Book.findById(req.params.bookId)
+        if(!book)
+            return res.status(404).send({
+                errmsg : "Book is not found"
+            })
+        if(book.assigned)
+            return res.status(404).send({
+                errmsg : "The book is already assigned"
+            })
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : true,user : req.user._id},{new:true,useFindAndModify : false})
+        res.send(updatedBook)
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
 //Withdraw book from library
-router.put('/:userId/books/withdraw/:bookId',async(req,res)=>{
+router.put('/:userId/books/withdraw/:bookId',adminAuth,async(req,res)=>{
     try{
         const book = await Book.findById(req.params.bookId)
         const user = await User.findById(req.params.userId)
@@ -167,8 +188,25 @@ router.put('/:userId/books/withdraw/:bookId',async(req,res)=>{
     }
 })
 
+//Deposit book by token
+router.put('/me/books/deposit/:bookId',userAuth,async(req,res)=>{
+    try{
+        const book = await Book.findById(req.params.bookId)
+        if(!book)
+            return res.status(404).send()
+        if (!book.assigned)
+            return res.status(403).send({
+                errmsg: "The book is already deposited in library"
+            })
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId,{assigned : false,user : null},{new:true,useFindAndModify : false})
+        res.send(updatedBook)
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
 //Deposit book 
-router.put('/:userId/books/deposit/:bookId',async(req,res)=>{
+router.put('/:userId/books/deposit/:bookId',adminAuth,async(req,res)=>{
     try{
         const book = await Book.findById(req.params.bookId)
         const user = await User.findById(req.params.userId)

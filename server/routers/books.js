@@ -1,9 +1,10 @@
 const express = require('express')
 const Book = require('../models/books')
+const adminAuth = require('../middleware/adminauth')
 const router = new express.Router()
 
 //Create Book
-router.post('/books',async (req,res)=>{
+router.post('/books',adminAuth,async (req,res)=>{
     const book = new Book(req.body)
     try{
         await book.save()
@@ -84,7 +85,7 @@ router.get('/books/:id',async (req,res)=>{
 })
 
 //Remove book from library
-router.delete('/books/:id',async(req,res)=>{
+router.delete('/books/:id',adminAuth,async(req,res)=>{
     try{
         const book = await Book.findById(req.params.id)
         if(!book)
@@ -99,7 +100,7 @@ router.delete('/books/:id',async(req,res)=>{
 })
 
 //Update book detailes
-router.put('/books/:id',async(req,res)=>{
+router.put('/books/:id',adminAuth,async(req,res)=>{
     try{
         const book = await Book.findByIdAndUpdate(req.params.id,req.body,{new : true,useFindAndModify : false})
         if(!book)

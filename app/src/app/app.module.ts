@@ -14,15 +14,19 @@ import { updateLanguageServiceSourceFile } from 'typescript';
 import { BooksComponent } from './books/books.component';
 import { UpdatebookComponent } from './updatebook/updatebook.component';
 import { WithdrawdepositComponent } from './withdrawdeposit/withdrawdeposit.component';
+import { LoginComponent } from './login/login.component';
+import { AccountuserComponent } from './accountuser/accountuser.component';
 
 
 
 const appRoutes: Routes = [
+  {path:'home',component: LoginComponent},
   {path:'users',component: UsersComponent},
   {path:'books',component: BooksComponent},
   {path:'users/:id/edit',component:UpdateuserComponent},
   {path:'books/:id/edit',component:UpdatebookComponent},
-  {path:'users/:id/books',component:WithdrawdepositComponent}
+  {path:'users/:id/books',component:WithdrawdepositComponent},
+  {path:'user/:token',component:AccountuserComponent},
 ]
 
 @NgModule({
@@ -32,7 +36,9 @@ const appRoutes: Routes = [
     UpdateuserComponent,
     UpdatebookComponent,
     BooksComponent,
-    WithdrawdepositComponent
+    WithdrawdepositComponent,
+    LoginComponent,
+    AccountuserComponent
   ],
   imports: [
     BrowserModule,
