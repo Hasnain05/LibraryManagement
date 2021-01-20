@@ -17,13 +17,16 @@ export class UpdateuserComponent implements OnInit {
   email;
   successUpdateAlert = false;
   errorUpdateAlert = false;
+  page = "admin";
+  token;
     
   constructor(private userService : UsersService,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.token = localStorage.getItem('token');
     this.id = this.route.snapshot.params['id'];
     let url = "http://localhost:3000/users/" + this.id;
-    this.userService.updateUser(url,{}).subscribe((data) => { 
+    this.userService.updateAuthUser(url,{},this.token).subscribe((data) => { 
       this.setTextField(data);
      }, (error: HttpErrorResponse) => {
       
@@ -46,7 +49,7 @@ export class UpdateuserComponent implements OnInit {
     if (value.email != "")
       Object.assign(user, { email: value.email });
     let url = "http://localhost:3000/users/" + this.id;
-    this.userService.updateUser(url,user).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    this.userService.updateAuthUser(url,user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }

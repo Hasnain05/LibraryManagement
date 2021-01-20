@@ -1,4 +1,6 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
+import { UsersService } from './users.service';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +10,32 @@ import { Component } from '@angular/core';
 export class AppComponent {
   name = 'Library Management App';
   isCollapsed = false;
+  login = true;
+  users = false;
+  books = false;
+
+  constructor(public router: Router,private userService : UsersService) { }
 
   onActivate(e){
-    console.log(e);
+    if(e.page==='admin'){
+      this.login = false;
+      this.users = true;
+      this.books = true;
+    }else if(e.page==='user'){
+      this.login = false;
+    }else{
+      this.login = true;
+      this.users = false;
+      this.books = false;
+    }
   }
+
+  onLogOut(){
+    const token = localStorage.getItem('token')
+    localStorage.removeItem('token')
+    this.userService.logoutUser(token).subscribe((data) => {
+      this.router.navigate(['/home'])
+    })
+  }
+  
 }

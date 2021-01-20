@@ -27,7 +27,12 @@ export class LoginComponent implements OnInit {
   }
 
   login(data){
-    this.router.navigate(['/user',data.token])
+    localStorage.setItem('token',data.token)
+    if(data.user.role==='admin'){
+      this.router.navigate(['/users'])
+    }else{
+      this.router.navigate(['/user'])
+    }
   }
 
 }

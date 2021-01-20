@@ -26,7 +26,7 @@ const appRoutes: Routes = [
   {path:'users/:id/edit',component:UpdateuserComponent},
   {path:'books/:id/edit',component:UpdatebookComponent},
   {path:'users/:id/books',component:WithdrawdepositComponent},
-  {path:'user/:token',component:AccountuserComponent},
+  {path:'user',component:AccountuserComponent},
 ]
 
 @NgModule({
