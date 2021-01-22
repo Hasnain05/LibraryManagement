@@ -10,6 +10,7 @@ import { UsersService } from '../users.service';
 })
 export class WithdrawdepositComponent implements OnInit {
   id;
+  page='admin';
 
   titleU;
   authorU;
@@ -28,11 +29,13 @@ export class WithdrawdepositComponent implements OnInit {
   numberOfItemsL;
   displayL='none';
   withdrawId;
+  token;
 
 
   constructor(private route:ActivatedRoute, private usersService:UsersService) { }
 
   ngOnInit(): void {
+    this.token = localStorage.getItem('token');
     this.id = this.route.snapshot.params['id'];
     let countUrlL = "http://localhost:3000/books/count?assigned=false";
     let urlL = "http://localhost:3000/books?assigned=false&limit=5";
@@ -65,7 +68,7 @@ export class WithdrawdepositComponent implements OnInit {
 
   onDepositUser(){
     let url = "http://localhost:3000/"+this.id+"/books/deposit/"+this.depositId;
-    this.usersService.updateUser(url,{}).subscribe((data)=>{this.ngOnInit();})
+    this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
     this.display='none';
   }
 
@@ -80,7 +83,7 @@ export class WithdrawdepositComponent implements OnInit {
 
   onWithdrawUser(){
     let url = "http://localhost:3000/"+this.id+"/books/withdraw/"+this.withdrawId;
-    this.usersService.updateUser(url,{}).subscribe((data)=>{this.ngOnInit();})
+    this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
     this.displayL='none';
     
   }

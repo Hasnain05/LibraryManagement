@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
 import { RouterModule, Routes } from '@angular/router';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider} from 'angularx-social-login';
 
 import { AppComponent } from './app.component';
 import { UsersComponent } from './users/users.component';
@@ -17,7 +18,16 @@ import { WithdrawdepositComponent } from './withdrawdeposit/withdrawdeposit.comp
 import { LoginComponent } from './login/login.component';
 import { AccountuserComponent } from './accountuser/accountuser.component';
 
+const config = new AuthServiceConfig([
+  {
+  id: GoogleLoginProvider.PROVIDER_ID,
+  provider: new GoogleLoginProvider('1064431252775-ni8f4ht40bq6pqbgffcea1imjrs0peb4.apps.googleusercontent.com')
+  }
+  ]);
 
+ export function provideConfig() {
+  return config;
+  }
 
 const appRoutes: Routes = [
   {path:'home',component: LoginComponent},
@@ -47,9 +57,13 @@ const appRoutes: Routes = [
     NgxPaginationModule,
     Ng2OrderModule,
     RouterModule.forRoot(appRoutes),
-    NgbModule
+    NgbModule,
+    SocialLoginModule
   ],
-  providers: [],
+  providers: [{
+    provide: AuthServiceConfig,
+    useFactory: provideConfig
+    }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

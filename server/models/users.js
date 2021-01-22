@@ -9,16 +9,14 @@ const userSchema = new mongoose.Schema({
         unique : true
     },
     password : {
-        type : String,
-        required : true
+        type : String
     },
     name : {
         type : String,
         required : true
     },
     age : {
-        type : Number,
-        required : true
+        type : Number
     },
     role : {
         type : String,
@@ -39,6 +37,19 @@ userSchema.methods.generateAuthToken = async function() {
     user.tokens = user.tokens.concat({token})
     await user.save()
     return token
+}
+
+userSchema.statics.getOrCreate = async (email,name,role) => {
+    const user = await User.findOne({email})
+    if(!user){
+        const newUser = new User({
+            email,name,role
+        })
+        await newUser.save()
+        return newUser
+    }else{
+        return user
+    }
 }
 
 userSchema.statics.findByCredentials = async (email,password) => {

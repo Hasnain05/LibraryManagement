@@ -4,6 +4,8 @@ const Book = require('../models/books')
 const userAuth = require('../middleware/userauth')
 const adminAuth = require('../middleware/adminauth')
 const router = new express.Router()
+const {OAuth2Client} = require('google-auth-library');
+const googleClient = new OAuth2Client('1064431252775-ni8f4ht40bq6pqbgffcea1imjrs0peb4.apps.googleusercontent.com');
 
 
 //Create User
@@ -14,6 +16,21 @@ router.post('/users',adminAuth,async (req,res)=>{
         res.status(201).send(user)
     }catch(e){
         res.status(400).send(e)
+    }
+})
+
+
+//Google Login User
+router.post('/login/google', async(req,res)=>{
+    try{
+        const { payload } = await googleClient.verifyIdToken({
+            idToken: req.body.token,
+        });
+        let user = await User.getOrCreate(payload.email,payload.name,'user')
+        const token = await user.generateAuthToken()
+        res.send({user,token})
+    }catch(e){
+        res.status(401).send(e)
     }
 })
 

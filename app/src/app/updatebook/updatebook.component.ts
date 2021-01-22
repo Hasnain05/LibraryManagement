@@ -16,13 +16,16 @@ export class UpdatebookComponent implements OnInit {
   genre;
   successUpdateAlert = false;
   errorUpdateAlert = false;
+  page='admin';
+  token;
 
   constructor(private booksService : BooksService,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
+    this.token = localStorage.getItem('token');
     let url = "http://localhost:3000/books/" + this.id;
-    this.booksService.updateBook(url,{}).subscribe((data) => { 
+    this.booksService.updateBook(url,{},this.token).subscribe((data) => { 
       this.setTextField(data);
      }, (error: HttpErrorResponse) => {
       
@@ -45,7 +48,7 @@ export class UpdatebookComponent implements OnInit {
     if (value.genre != "")
       Object.assign(book, { genre: value.genre });
     let url = "http://localhost:3000/books/" + this.id;
-    this.booksService.updateBook(url,book).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    this.booksService.updateBook(url,book,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }

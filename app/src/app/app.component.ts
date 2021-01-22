@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { UsersService } from './users.service';
+import { AuthService } from 'angularx-social-login';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent {
   users = false;
   books = false;
 
-  constructor(public router: Router,private userService : UsersService) { }
+  constructor(public router: Router,private userService : UsersService,private authService: AuthService) { }
 
   onActivate(e){
     if(e.page==='admin'){
@@ -33,6 +34,7 @@ export class AppComponent {
   onLogOut(){
     const token = localStorage.getItem('token')
     localStorage.removeItem('token')
+    this.authService.signOut();
     this.userService.logoutUser(token).subscribe((data) => {
       this.router.navigate(['/home'])
     })

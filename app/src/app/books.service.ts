@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -8,19 +8,25 @@ export class BooksService {
 
   constructor(private http: HttpClient) { }
 
-  addBook(book){
-    return this.http.post("http://localhost:3000/books", book)
+  addBook(book,token){
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', token);
+    return this.http.post("http://localhost:3000/books", book,{headers})
   }
 
-  deleteBook(id){
-    return this.http.delete("http://localhost:3000/books/"+id)
+  deleteBook(id,token){
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', token);
+    return this.http.delete("http://localhost:3000/books/"+id,{headers})
   }
 
   getBook (url){
     return this.http.get(url)
   }
 
-  updateBook(url,book){
-    return this.http.put(url, book)
+  updateBook(url,book,token){
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', token);
+    return this.http.put(url, book,{headers})
   }
 }

@@ -23,10 +23,13 @@ export class BooksComponent implements OnInit {
   numberOfItems;
   display='none';
   deleteId;
+  page='admin';
+  token;
 
   constructor(private booksService: BooksService) { }
 
   ngOnInit(): void {
+    this.token = localStorage.getItem('token');
     let url = "http://localhost:3000/books?limit=5";
     let countUrl = "http://localhost:3000/books/count";
     this.booksService.getBook(countUrl).
@@ -42,13 +45,13 @@ export class BooksComponent implements OnInit {
 
   onAddBook(form:NgForm){
     const book = form.value;
-    this.booksService.addBook(book).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
+    this.booksService.addBook(book,this.token).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
   } 
 
   onDeleteBook(){
-    this.booksService.deleteBook(this.deleteId).subscribe((data)=>{this.ngOnInit(); this.successDeleteAlert = true; },(error: HttpErrorResponse) => {
+    this.booksService.deleteBook(this.deleteId,this.token).subscribe((data)=>{this.ngOnInit(); this.successDeleteAlert = true; },(error: HttpErrorResponse) => {
       this.errorDeleteAlert = true;
     });
     this.display='none';
