@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BooksService } from '../books.service';
 
 @Component({
@@ -21,15 +22,23 @@ export class BooksComponent implements OnInit {
   p:number=1;
   countObject;
   numberOfItems;
+  addDisplay='none';
   display='none';
   deleteId;
   page='admin';
   token;
 
-  constructor(private booksService: BooksService) { }
+  products = [];
+  uploadDisplay='none';
+  addMultipleBookStatus=true;
+
+  constructor(private booksService: BooksService,public router: Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     let url = "http://localhost:3000/books?limit=5";
     let countUrl = "http://localhost:3000/books/count";
     this.booksService.getBook(countUrl).
@@ -85,8 +94,19 @@ export class BooksComponent implements OnInit {
     this.display='block';
   }
 
-  onCloseModal(){
-    this.display='none';
+  onOpenUploadModal(){
+    this.uploadDisplay='block';
+  }
+
+  onOpenAddModal(){
+    this.addDisplay='block';
+  }
+
+  onAddMultipleBooks(){
+    for(let i=0;i<this.products.length;i++){
+      this.booksService.addBook(this.products[i],this.token).subscribe((data) => {  }, (error: HttpErrorResponse) => {});
+    }
+    this.uploadDisplay='none';
   }
 
   onPageChanged(page){
@@ -104,6 +124,33 @@ export class BooksComponent implements OnInit {
     }
     this.booksService.getBook(url).
       subscribe((data) => this.bookList = data)
+  }
+
+  uploadExcel(e) {
+    try {
+      this.addMultipleBookStatus = true;
+      const fileName = e.target.files[0].name;
+      import('xlsx').then(xlsx => {
+        let workBook = null;
+        let jsonData = null;
+        const reader = new FileReader();
+        // const file = ev.target.files[0];
+        reader.onload = (event) => {
+          const data = reader.result;
+          workBook = xlsx.read(data, { type: 'binary' });
+          jsonData = workBook.SheetNames.reduce((initial, name) => {
+            const sheet = workBook.Sheets[name];
+            initial[name] = xlsx.utils.sheet_to_json(sheet);
+            return initial;
+          }, {});
+          this.products = jsonData[Object.keys(jsonData)[0]];
+          this.addMultipleBookStatus=false;
+        };
+        reader.readAsBinaryString(e.target.files[0]);
+      });
+    } catch (e) {
+      console.log('error', e);
+    }
   }
 
 }

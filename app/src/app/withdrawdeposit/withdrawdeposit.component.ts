@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../users.service';
 
 @Component({
@@ -32,10 +32,13 @@ export class WithdrawdepositComponent implements OnInit {
   token;
 
 
-  constructor(private route:ActivatedRoute, private usersService:UsersService) { }
+  constructor(private route:ActivatedRoute, private usersService:UsersService,public router:Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     this.id = this.route.snapshot.params['id'];
     let countUrlL = "http://localhost:3000/books/count?assigned=false";
     let urlL = "http://localhost:3000/books?assigned=false&limit=5";

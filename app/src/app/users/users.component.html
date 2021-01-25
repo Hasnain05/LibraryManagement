@@ -43,62 +43,21 @@
 </table>
 <pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
-<button class="btn btn-primary mb-2" (click)="showAddUser=!showAddUser">Click to add User</button>
-<div *ngIf="showAddUser">
-    <h2>Create User</h2>
-    <form (ngSubmit)="onAddUser(f1)" #f1="ngForm">
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="name">Name :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="name" class="form-control" name="name" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="age">Age :</label>
-            </div>
-            <div class="col-9">
-                <input type="number" id="age" class="form-control" name="age" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="email">Email :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="email" class="form-control" name="email" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="role">Role :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="role" class="form-control" name="role" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="password">Password :</label>
-            </div>
-            <div class="col-9">
-                <input type="password" id="password" class="form-control" name="password" ngModel required>
-            </div>
-        </div>
-        <button class="btn btn-success" type="submit" [disabled]="!f1.valid">Add User</button>
-        <div class="alert alert-success mt-2" *ngIf="successAddAlert">
-            <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
-            <strong>Success!</strong> User created
-        </div>
-        <div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
-            <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
-            <strong>Error!</strong> Email must be unique or network error
-        </div>
-    </form>
-</div>
+
 <hr>
+
+<button type="button" class="btn btn-info" (click)="onOpenAddModal()">
+    Add User
+</button>
+
+<div class="alert alert-success mt-2" *ngIf="successAddAlert">
+    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+    <strong>Success!</strong> User created
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+    <strong>Error!</strong> Email must be unique or network error
+</div>
 
 <!-- Confirmation for delete -->
 <div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
@@ -111,6 +70,68 @@
                 <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
                 <button type="button" class="btn btn-danger" (click)="onDeleteUser()">Delete User</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add User -->
+<div class="modal" [ngStyle]="{'display':addDisplay}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info">Add User</h5>
+                <button type="button" class="close text-info" data-dismiss="modal" aria-label="Close" (click)="addDisplay='none'">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form (ngSubmit)="onAddUser(f1)" #f1="ngForm">
+            <div class="modal-body">
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="name">Name :</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" id="name" class="form-control" name="name" ngModel required>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="age">Age :</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="number" id="age" class="form-control" name="age" ngModel required>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="email">Email :</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" id="email" class="form-control" name="email" ngModel required>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="role">Role :</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="text" id="role" class="form-control" name="role" ngModel required>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="password">Password :</label>
+                    </div>
+                    <div class="col-9">
+                        <input type="password" id="password" class="form-control" name="password" ngModel required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addDisplay='none'">Close</button>
+                <button class="btn btn-info float-right" type="submit" [disabled]="!f1.valid">Add User</button>
+            </div>
+        </form>
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UsersService } from '../users.service';
 
 
@@ -25,11 +26,15 @@ export class UsersComponent implements OnInit {
   successDeleteAlert = false;
   page="admin"
   token;
+  addDisplay = 'none';
 
-  constructor(private usersService: UsersService) { }
+  constructor(private usersService: UsersService,public router:Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token')
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     let url = "http://localhost:3000/users?limit=5";
     let countUrl = "http://localhost:3000/users/count";
     this.usersService.getAuthUser(countUrl,this.token).
@@ -68,6 +73,10 @@ export class UsersComponent implements OnInit {
       this.errorAddAlert = true;
     });
   } 
+
+  onOpenAddModal(){
+    this.addDisplay='block';
+  }
 
   onPageChanged(page){
     this.p = page

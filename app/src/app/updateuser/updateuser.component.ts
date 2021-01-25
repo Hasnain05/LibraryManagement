@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router} from '@angular/router';
 import { DataService } from '../data.service'
 import { UsersService } from '../users.service';
 
@@ -20,10 +20,13 @@ export class UpdateuserComponent implements OnInit {
   page = "admin";
   token;
     
-  constructor(private userService : UsersService,private route:ActivatedRoute) { }
+  constructor(private userService : UsersService,private route:ActivatedRoute,public router:Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     this.id = this.route.snapshot.params['id'];
     let url = "http://localhost:3000/users/" + this.id;
     this.userService.updateAuthUser(url,{},this.token).subscribe((data) => { 

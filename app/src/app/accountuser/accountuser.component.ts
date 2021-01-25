@@ -1,5 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { __assign } from 'tslib';
 import { UsersService } from '../users.service';
@@ -14,6 +15,12 @@ export class AccountuserComponent implements OnInit {
   page = "user";
   name;
   id;
+  age;
+  email;
+
+  editDisplay='none';
+  successUpdateAlert = false;
+  errorUpdateAlert = false;
 
   titleU;
   authorU;
@@ -37,6 +44,9 @@ export class AccountuserComponent implements OnInit {
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token')
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     const url = "http://localhost:3000/users/me";
     this.usersService.getAuthUser(url,this.token).subscribe((data)=>{
       this.assign(data);
@@ -47,6 +57,8 @@ export class AccountuserComponent implements OnInit {
 
   assign(data){
     this.name = data.name;
+    this.age = data.age;
+    this.email = data.email;
     this.id = data._id;
     let countUrlL = "http://localhost:3000/books/count?assigned=false";
     let urlL = "http://localhost:3000/books?assigned=false&limit=5";
@@ -96,8 +108,25 @@ export class AccountuserComponent implements OnInit {
     let url = "http://localhost:3000/me/books/withdraw/"+this.withdrawId;
     this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
     this.displayL='none';
-    
   }
+
+  onEditUser(form:NgForm){
+    const value = form.value;
+    const user = {};
+    if (value.name != "")
+      Object.assign(user, { name: value.name });
+    if (value.age != "" && value.age != null)
+      Object.assign(user, { age: value.age });
+    if (value.email != "")
+      Object.assign(user, { email: value.email });
+    const url = "http://localhost:3000/users/me";
+    this.usersService.updateAuthUser(url,user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+      this.errorUpdateAlert = true;
+    });
+    this.ngOnInit();
+    this.editDisplay='none';
+  }
+
 
   onCloseModalL(){
     this.displayL='none';

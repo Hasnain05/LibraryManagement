@@ -43,57 +43,107 @@
 </table>
 <pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
-<button class="btn btn-primary mb-2" (click)="showAddBook=!showAddBook">Click to add Book</button>
-<div *ngIf="showAddBook">
-    <h2>Add Book</h2>
-    <form (ngSubmit)="onAddBook(f1)" #f1="ngForm">
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="title">Title :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="title" class="form-control" name="title" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="author">Author :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="author" class="form-control" name="author" ngModel required>
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-3">
-                <label for="genre">Genre :</label>
-            </div>
-            <div class="col-9">
-                <input type="text" id="genre" class="form-control" name="genre" ngModel required>
-            </div>
-        </div>
-        <button class="btn btn-success" type="submit" [disabled]="!f1.valid">Add Book</button>
-        <div class="alert alert-success mt-2" *ngIf="successAddAlert">
-            <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
-            <strong>Success!</strong> Book Added
-        </div>
-        <div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
-            <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
-            <strong>Error!</strong> Network error
-        </div>
-    </form>
-</div>
 <hr>
+<div class="alert alert-success mt-2" *ngIf="successAddAlert">
+    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+    <strong>Success!</strong> Book Added
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+    <strong>Error!</strong> Network error
+</div>
+
+<button type="button" class="btn btn-info" (click)="onOpenAddModal()">
+    Add single book
+</button>
+
+<br><br>
+
+<button type="button" class="btn btn-info" (click)="onOpenUploadModal()">
+    Add multiple books
+</button>
+
 <!-- Confirmation for delete -->
-<div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
+<div class="modal" [ngStyle]="{'display':display}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          Are you sure you want to delete?
+        <div class="modal-content">
+            <div class="modal-body">
+                Are you sure you want to delete?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="display='none'">Close</button>
+                <button type="button" class="btn btn-danger" (click)="onDeleteBook()">Delete Book</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
-          <button type="button" class="btn btn-danger" (click)="onDeleteBook()">Delete Book</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+
+<!-- Modal for Upload -->
+<div class="modal" [ngStyle]="{'display':uploadDisplay}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info">Add books using xlsx or csv file</h5>
+                <button type="button" class="close text-info" data-dismiss="modal" aria-label="Close" (click)="uploadDisplay='none'">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            <div class="modal-body">
+                <input type="file" (change)="uploadExcel($event)" placeholder="Upload csv or xlsx">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="uploadDisplay='none'">Close</button>
+                <button type="button" [disabled]="addMultipleBookStatus" class="btn btn-info" (click)="onAddMultipleBooks()">Add Books</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Book -->
+<div class="modal" [ngStyle]="{'display':addDisplay}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info">Add book</h5>
+                <button type="button" class="close text-info" data-dismiss="modal" aria-label="Close" (click)="addDisplay='none'">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form (ngSubmit)="onAddBook(f1)" #f1="ngForm">
+            <div class="modal-body">
+                
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="title">Title :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="title" class="form-control" name="title" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="author">Author :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="author" class="form-control" name="author" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="genre">Genre :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="genre" class="form-control" name="genre" ngModel required>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addDisplay='none'">Close</button>
+                <button class="btn btn-info float-right" type="submit" [disabled]="!f1.valid">Add Book</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+<br><br>

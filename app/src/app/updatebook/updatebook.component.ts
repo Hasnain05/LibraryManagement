@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BooksService } from '../books.service';
 
 @Component({
@@ -19,11 +19,14 @@ export class UpdatebookComponent implements OnInit {
   page='admin';
   token;
 
-  constructor(private booksService : BooksService,private route:ActivatedRoute) { }
+  constructor(private booksService : BooksService,private route:ActivatedRoute,public router: Router) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
     this.token = localStorage.getItem('token');
+    if(!this.token){
+      this.router.navigate(['/home'])
+    }
     let url = "http://localhost:3000/books/" + this.id;
     this.booksService.updateBook(url,{},this.token).subscribe((data) => { 
       this.setTextField(data);
