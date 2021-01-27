@@ -39,5 +39,9 @@ export class AppComponent {
       this.router.navigate(['/home'])
     })
   }
+
+  onLogIn(){
+    this.router.navigate(['/home'])
+  }
   
 }

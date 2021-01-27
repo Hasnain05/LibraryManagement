@@ -104,7 +104,7 @@ export class BooksComponent implements OnInit {
 
   onAddMultipleBooks(){
     for(let i=0;i<this.products.length;i++){
-      this.booksService.addBook(this.products[i],this.token).subscribe((data) => {  }, (error: HttpErrorResponse) => {});
+      this.booksService.addBook(this.products[i],this.token).subscribe((data) => {  this.ngOnInit()}, (error: HttpErrorResponse) => {});
     }
     this.uploadDisplay='none';
   }
@@ -151,6 +151,10 @@ export class BooksComponent implements OnInit {
     } catch (e) {
       console.log('error', e);
     }
+  }
+
+  onEditBook(id){
+    this.router.navigate(['/books',id,'edit']);
   }
 
 }

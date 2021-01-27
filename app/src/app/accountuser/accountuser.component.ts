@@ -212,5 +212,8 @@ export class AccountuserComponent implements OnInit {
       subscribe((data) => this.bookListLibrary = data)
   }
 
+  onBookDetails(id){
+    this.router.navigate(['/books',id,'details']);
+  }
 
 }

@@ -18,7 +18,7 @@
     <button class="close" (click)="successDeleteAlert=!successDeleteAlert">x</button>
     <strong>Success!</strong> Book is deleted
 </div>
-<table class="table table-dark table-striped">
+<!-- <table class="table table-dark table-striped">
     <thead>
         <tr>
             <th>Title</th>
@@ -40,7 +40,22 @@
             </td>
         </tr>
     </tbody>
-</table>
+</table> -->
+<div class="card-deck">
+    <div class="card text-white bg-dark col-2" *ngFor="let book of bookList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}" >
+        <br>
+        <img class="card-img" src="../../assets/bookcover.png" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{book.title}}</h5>
+            <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+        </div>
+        <button class="btn btn-outline-primary mb-2" (click)="onEditBook(book._id)">Edit</button>
+        <button type="button" class="btn btn-outline-danger mb-2" (click)="onOpenModal(book._id)">
+            Delete
+        </button>
+    </div>
+</div>
+<br>
 <pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
 <hr>

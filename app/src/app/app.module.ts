@@ -18,6 +18,7 @@ import { WithdrawdepositComponent } from './withdrawdeposit/withdrawdeposit.comp
 import { LoginComponent } from './login/login.component';
 import { AccountuserComponent } from './accountuser/accountuser.component';
 import { PublicbooksComponent } from './publicbooks/publicbooks.component';
+import { BooksdetailsComponent } from './booksdetails/booksdetails.component';
 
 const config = new AuthServiceConfig([
   {
@@ -36,6 +37,7 @@ const appRoutes: Routes = [
   {path:'users',component: UsersComponent},
   {path:'books',component: BooksComponent},
   {path:'users/:id/edit',component:UpdateuserComponent},
+  {path:'books/:id/details',component:BooksdetailsComponent},
   {path:'books/:id/edit',component:UpdatebookComponent},
   {path:'users/:id/books',component:WithdrawdepositComponent},
   {path:'user',component:AccountuserComponent},
@@ -51,7 +53,8 @@ const appRoutes: Routes = [
     WithdrawdepositComponent,
     LoginComponent,
     AccountuserComponent,
-    PublicbooksComponent
+    PublicbooksComponent,
+    BooksdetailsComponent
   ],
   imports: [
     BrowserModule,

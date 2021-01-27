@@ -15,7 +15,7 @@
           <a *ngIf="books" class="nav-link" [routerLink]="['/books']">Books</a>
         </li>
       </ul>
-      <button *ngIf="login" class="btn btn-outline-success my-2 my-sm-0">Login</button>
+      <button *ngIf="login" class="btn btn-outline-success my-2 my-sm-0" (click)="onLogIn()">Login</button>
       <button *ngIf="!login" class="btn btn-outline-danger my-2 my-sm-0" (click)="onLogOut()">Logout</button>
     </div>
   </nav>

@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BooksService } from '../books.service';
@@ -19,7 +20,7 @@ export class UpdatebookComponent implements OnInit {
   page='admin';
   token;
 
-  constructor(private booksService : BooksService,private route:ActivatedRoute,public router: Router) { }
+  constructor(private location: Location,private booksService : BooksService,private route:ActivatedRoute,public router: Router) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -54,6 +55,10 @@ export class UpdatebookComponent implements OnInit {
     this.booksService.updateBook(url,book,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
+  }
+
+  onBack(){
+    this.location.back();
   }
 
 }
