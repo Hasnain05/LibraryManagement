@@ -1,3 +1,16 @@
+<br>
+<button type="button" class="btn btn-info" (click)="onOpenAddModal()">
+    Add User
+</button>
+<div class="alert alert-success mt-2" *ngIf="successAddAlert">
+    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+    <strong>Success!</strong> User created
+</div>
+<hr>
+<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+    <strong>Error!</strong> Email must be unique or network error
+</div>
 <h2>User List</h2>
 <div class="row">
     <div class="col-3">
@@ -43,21 +56,6 @@
 </table>
 <pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
-
-<hr>
-
-<button type="button" class="btn btn-info" (click)="onOpenAddModal()">
-    Add User
-</button>
-
-<div class="alert alert-success mt-2" *ngIf="successAddAlert">
-    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
-    <strong>Success!</strong> User created
-</div>
-<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
-    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
-    <strong>Error!</strong> Email must be unique or network error
-</div>
 
 <!-- Confirmation for delete -->
 <div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">

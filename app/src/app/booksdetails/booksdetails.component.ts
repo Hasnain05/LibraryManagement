@@ -16,6 +16,8 @@ export class BooksdetailsComponent implements OnInit {
   author;
   genre;
   page="user";
+  imagePath;
+  summary;
   
   constructor(private location: Location,private booksService : BooksService,private route:ActivatedRoute,public router: Router) { }
 
@@ -34,9 +36,11 @@ export class BooksdetailsComponent implements OnInit {
   }
 
   setTextField(data){
+    this.summary = data.summary;
     this.title = data.title;
     this.author = data.author;
     this.genre = data.genre;
+    this.imagePath = data.coverImage;
   }
 
   onBack(){

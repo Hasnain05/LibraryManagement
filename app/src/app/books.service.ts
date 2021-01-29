@@ -29,4 +29,12 @@ export class BooksService {
     headers = headers.set('Authorization', token);
     return this.http.put(url, book,{headers})
   }
+
+  ocr(base64Image){
+    let headers = new HttpHeaders();
+    headers = headers.set('apikey', '663a42bbe188957');
+    const formData = new FormData();
+    formData.append('base64Image', base64Image);
+    return this.http.post("https://api.ocr.space/parse/image", formData,{headers})
+  }
 }

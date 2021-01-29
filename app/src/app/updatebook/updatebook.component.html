@@ -24,15 +24,31 @@
             <input type="text" id="genre" class="form-control" [value]="genre" name="genre" ngModel>
         </div>
     </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="summary">Summary :</label>
+        </div>
+        <div class="col-9">
+            <textarea rows="5" type="text" id="summary" class="form-control" [value]="summary" name="summary" ngModel></textarea>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="image">Book Cover:</label>
+        </div>
+        <div class="col-9">
+            <input type="file" name="coverImage" id="image" (change)="getBase64($event)" accept="image/*" ngModel>
+        </div>
+    </div>
     <button class="btn btn-success" type="submit" [disabled]="!f.valid">Update Book</button>
-    <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
-        <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
-        <strong>Success!</strong> Book updated
-    </div>
-    <div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
-        <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
-        <strong>Error!</strong> Network error
-    </div>
 </form>
+<div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
+    <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
+    <strong>Success!</strong> Book updated
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
+    <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
+    <strong>Error!</strong> Network error
+</div>
 <br>
 <button class="btn btn-info" (click)="onBack()">Back</button>

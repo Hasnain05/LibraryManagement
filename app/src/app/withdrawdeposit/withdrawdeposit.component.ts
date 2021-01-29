@@ -118,6 +118,10 @@ export class WithdrawdepositComponent implements OnInit {
     this.pU = 1
   }
 
+  onBookDetails(id){
+    this.router.navigate(['/books',id,'details']);
+  }
+
   SearchL(){
     let url = "http://localhost:3000/books?assigned=false";
     let countUrl = "http://localhost:3000/books/count?assigned=false";

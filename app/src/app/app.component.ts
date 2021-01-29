@@ -36,7 +36,7 @@ export class AppComponent {
     localStorage.removeItem('token')
     this.authService.signOut();
     this.userService.logoutUser(token).subscribe((data) => {
-      this.router.navigate(['/home'])
+      this.router.navigate(['/'])
     })
   }
 

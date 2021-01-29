@@ -1,7 +1,7 @@
-<br><br>
+<br>
 <div class="row">
     <div class="col-4">
-        <img class="rounded bookimg" width="280" height="380" src="../../assets/bookcover.png" alt="Card image cap">
+        <img class="rounded bookimg" width="250" height="380" [src]="imagePath" alt="Card image cap">
         <!-- <button type="button" class="btn btn-danger withdraw">
             Deposit
         </button> -->
@@ -14,9 +14,10 @@
         <hr>
         <h4 class="mt-4">Summary:</h4>
         <p class="mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at diam tortor. Proin pharetra varius elit, id consectetur lacus. Proin ac massa at enim lacinia blandit. Nam sit amet eros sit amet libero volutpat suscipit. Vivamus vitae scelerisque est. In quis justo suscipit, venenatis mauris vitae, pharetra nulla. Sed non nisi et purus pharetra hendrerit. Vestibulum a interdum felis. Proin at ante eget eros condimentum ultricies. Ut pellentesque magna eu tortor venenatis, non volutpat ante accumsan.
+            {{summary}}
         </p>
     </div>
 </div>
 <br><br>
 <button class="btn btn-info" (click)="onBack()">Back</button>
+<br>

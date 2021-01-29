@@ -25,6 +25,7 @@
     "bootstrap": "^4.5.3",
     "ng2-order-pipe": "^0.1.5",
     "ngx-pagination": "^5.0.0",
+    "ngx-spinner": "^10.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "xlsx": "^0.16.9",

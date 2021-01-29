@@ -21,5 +21,11 @@ module.exports = mongoose.model('books',{
     author : {
         type : String,
         required : true
+    },
+    coverImage:{
+        type : String
+    },
+    summary:{
+        type : String
     }
 })

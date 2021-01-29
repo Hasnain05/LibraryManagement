@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BooksService } from '../books.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 
 @Component({
   selector: 'app-books',
@@ -13,6 +15,7 @@ export class BooksComponent implements OnInit {
   title;
   author;
   genre;
+  search;
   bookList;
   showAddBook = false;
   successAddAlert = false;
@@ -31,8 +34,10 @@ export class BooksComponent implements OnInit {
   products = [];
   uploadDisplay='none';
   addMultipleBookStatus=true;
+  base64Image;
+  imagePath;
 
-  constructor(private booksService: BooksService,public router: Router) { }
+  constructor(private booksService: BooksService,public router: Router,private _sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
@@ -54,6 +59,7 @@ export class BooksComponent implements OnInit {
 
   onAddBook(form:NgForm){
     const book = form.value;
+    book.coverImage = this.base64Image;
     this.booksService.addBook(book,this.token).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
@@ -66,7 +72,7 @@ export class BooksComponent implements OnInit {
     this.display='none';
   }
 
-  Search(){
+  /* Search(){
     let url = "http://localhost:3000/books?";
     let countUrl = "http://localhost:3000/books/count?";
     if(this.title){
@@ -80,6 +86,21 @@ export class BooksComponent implements OnInit {
     if(this.genre){
       url = url + "&genre=" + this.genre;
       countUrl = countUrl + "&genre=" + this.genre;
+    }
+    this.booksService.getBook(countUrl).
+      subscribe((data) => this.assignCount(data))
+    url = url + "&limit=5"
+    this.booksService.getBook(url).
+      subscribe((data) => this.bookList = data)
+    this.p = 1
+  } */
+
+  onSearch(){
+    let url = "http://localhost:3000/search/books?";
+    let countUrl = "http://localhost:3000/search/books/count?";
+    if(this.search){
+      url = url + "search=" + this.search;
+      countUrl = countUrl + "search=" + this.search;
     }
     this.booksService.getBook(countUrl).
       subscribe((data) => this.assignCount(data))
@@ -112,15 +133,9 @@ export class BooksComponent implements OnInit {
   onPageChanged(page){
     this.p = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/books?limit=5&skip=" + skip;
-    if(this.title){
-      url = url + "&title=" + this.title;
-    } 
-    if(this.author){
-      url = url + "&author=" + this.author;
-    }
-    if(this.genre){
-      url = url + "&genre=" + this.genre;
+    let url = "http://localhost:3000/search/books?limit=5&skip=" + skip;
+    if(this.search){
+      url = url + "&search=" + this.search;
     }
     this.booksService.getBook(url).
       subscribe((data) => this.bookList = data)
@@ -155,6 +170,20 @@ export class BooksComponent implements OnInit {
 
   onEditBook(id){
     this.router.navigate(['/books',id,'edit']);
+  }
+
+  onBookDetails(id){
+    this.router.navigate(['/books',id,'details']);
+  }
+
+  getBase64(event) {
+    let me = this;
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      me.base64Image = reader.result;
+    };
   }
 
 }

@@ -15,10 +15,12 @@ export class UpdatebookComponent implements OnInit {
   title;
   author;
   genre;
+  summary;
   successUpdateAlert = false;
   errorUpdateAlert = false;
   page='admin';
   token;
+  base64Image;
 
   constructor(private location: Location,private booksService : BooksService,private route:ActivatedRoute,public router: Router) { }
 
@@ -40,6 +42,7 @@ export class UpdatebookComponent implements OnInit {
     this.title = data.title;
     this.author = data.author;
     this.genre = data.genre;
+    this.summary = data.summary;
   }
 
   onUpdateBook(form: NgForm) {
@@ -51,10 +54,24 @@ export class UpdatebookComponent implements OnInit {
       Object.assign(book, { author: value.author });
     if (value.genre != "")
       Object.assign(book, { genre: value.genre });
+    if (value.summary != "")
+      Object.assign(book, { summary: value.summary });
+    if (value.coverImage != "")
+      Object.assign(book, { coverImage: this.base64Image });
     let url = "http://localhost:3000/books/" + this.id;
     this.booksService.updateBook(url,book,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
+  }
+
+  getBase64(event) {
+    let me = this;
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      me.base64Image = reader.result;
+    };
   }
 
   onBack(){

@@ -1,9 +1,23 @@
 <h2>Welcome {{name}}</h2>
-<button type="button" class="btn btn-info float-right" (click)="editDisplay='block'">
+<button type="button" class="btn btn-info" (click)="editDisplay='block'">
     Edit Profile
 </button>
 <br>
-<h2>Books with User</h2>
+<hr>
+<div class="alert alert-success mt-2" *ngIf="successAddAlert">
+    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+    <strong>Success!</strong> Book Donated
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+    <strong>Error!</strong> Network error
+</div>
+<h3 class="d-inline font-italic mr-3">Help by donating books to the library!!</h3>
+<button type="button" class="btn btn-warning mr-3" (click)="addDisplay='block'">
+    Donate Book
+</button>
+<hr>
+<h2>My Books</h2>
 <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
     <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
     <strong>Success!</strong> User updated
@@ -13,43 +27,16 @@
     <strong>Error!</strong> Email must be unique or Network error
 </div>
 <div class="row">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="titleU" placeholder="title">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="authorU" placeholder="author">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="genreU" placeholder="genre">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchU()" [(ngModel)]="searchU" placeholder="Search by title or author or genre">
     </div>
 </div>
 <br>
-<!-- <table class="table table-dark table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}">
-            <td>{{book.title}}</td>
-            <td>{{book.author}}</td>
-            <td>{{book.genre}}</td>
-            <td>
-                <button type="button" class="btn btn-danger" (click)="onOpenModal(book._id)">
-                    Deposit
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table> -->
+
 <div class="card-deck">
     <div class="card text-white bg-dark col-2" *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}" >
         <br>
-        <img class="card-img" src="../../assets/bookcover.png" alt="Card image cap">
+        <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title text-center">{{book.title}}</h5>
             <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
@@ -68,44 +55,17 @@
 <br>
 <br>
 
-<h2>Books in Library</h2>
+<h2>Books Available</h2>
 <div class="row">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="titleL" placeholder="title">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="authorL" placeholder="author">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="genreL" placeholder="genre">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchL()" [(ngModel)]="searchL" placeholder="Search by title or author or genre">
     </div>
 </div>
-<!-- <table class="table table-dark table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}">
-            <td>{{book.title}}</td>
-            <td>{{book.author}}</td>
-            <td>{{book.genre}}</td>
-            <td>
-                <button type="button" class="btn btn-success" (click)="onOpenModalL(book._id)">
-                    Withdraw
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table> -->
+
 <div class="card-deck">
     <div class="card text-white bg-dark col-2" *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}" >
         <br>
-        <img class="card-img" src="../../assets/bookcover.png" alt="Card image cap">
+        <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title text-center">{{book.title}}</h5>
             <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
@@ -199,4 +159,68 @@
     </div>
 </div>
 
-
+<!-- Modal for Add Book -->
+<div class="modal" [ngStyle]="{'display':addDisplay}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info">Donate book</h5>
+                <button type="button" class="close text-info" data-dismiss="modal" aria-label="Close" (click)="addDisplay='none'">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form (ngSubmit)="onAddBook(f2)" #f2="ngForm">
+            <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="title">Title :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="title" class="form-control" name="title" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="author">Author :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="author" class="form-control" name="author" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="genre">Genre :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="text" id="genre" class="form-control" name="genre" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="summary">Summary :</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="file" (change)="getBase64Summary($event)" accept="image/*">
+                        </div>
+                        <div class="col-3"><ngx-spinner><p style="font-size: 20px; color: white">Loading...</p></ngx-spinner></div>
+                        <div class="col-9">
+                            <textarea rows="5" type="text" id="summary" class="form-control" [(ngModel)]="summary" name="summary" ngModel required></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="image">Book Cover:</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="file" name="coverImage" id="image" (change)="getBase64($event)" accept="image/*" ngModel required>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="addDisplay='none'">Close</button>
+                <button class="btn btn-info float-right" type="submit" [disabled]="!f2.valid">Donate Book</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>

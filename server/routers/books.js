@@ -1,10 +1,11 @@
 const express = require('express')
 const Book = require('../models/books')
 const adminAuth = require('../middleware/adminauth')
+const userAuth = require('../middleware/userauth')
 const router = new express.Router()
 
 //Create Book
-router.post('/books',adminAuth,async (req,res)=>{
+router.post('/books',userAuth,async (req,res)=>{
     const book = new Book(req.body)
     try{
         await book.save()
@@ -38,6 +39,68 @@ router.get('/books',async (req,res)=>{
         }
         const books = await Book.find(match).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
         res.send(books)
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
+
+//Common Search Books
+router.get('/search/books',async (req,res)=>{
+    try{
+        const innerMatch = []
+        const match = {}
+        if(req.query.search){
+            const regex = new RegExp(req.query.search, 'i')
+            innerMatch.push({
+                title : {$regex: regex}
+            }) 
+            innerMatch.push({
+                author : {$regex: regex}
+            }) 
+            innerMatch.push({
+                genre : {$regex: regex}
+            }) 
+            match['$or'] = innerMatch; 
+        }
+        if(req.query.assigned){
+            match.assigned = req.query.assigned
+        }
+        if(req.query.user){
+            match.user = req.query.user
+        }
+        const books = await Book.find(match).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
+        res.send(books)
+    }catch(e){
+        res.status(500).send(e)
+    }
+})
+
+//Count Common Search Books
+router.get('/search/books/count',async (req,res)=>{
+    try{
+        const innerMatch = []
+        const match = {}
+        if(req.query.search){
+            const regex = new RegExp(req.query.search, 'i')
+            innerMatch.push({
+                title : {$regex: regex}
+            }) 
+            innerMatch.push({
+                author : {$regex: regex}
+            }) 
+            innerMatch.push({
+                genre : {$regex: regex}
+            }) 
+            match['$or'] = innerMatch; 
+        }
+        if(req.query.assigned){
+            match.assigned = req.query.assigned
+        }
+        if(req.query.user){
+            match.user = req.query.user
+        }
+        const count = await Book.countDocuments(match);
+        res.send({count})
     }catch(e){
         res.status(500).send(e)
     }

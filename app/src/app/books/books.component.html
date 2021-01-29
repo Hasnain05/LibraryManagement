@@ -1,13 +1,23 @@
+<br>
+<div class="alert alert-success mt-2" *ngIf="successAddAlert">
+    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
+    <strong>Success!</strong> Book Added
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
+    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
+    <strong>Error!</strong> Network error
+</div>
+<button type="button" class="btn btn-info mr-3" (click)="onOpenAddModal()">
+    Add single book
+</button>
+<button type="button" class="btn btn-info ml-3" (click)="onOpenUploadModal()">
+    Add multiple books
+</button>
+<hr>
 <h2>Books List</h2>
 <div class="row">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2" (input)="Search()" [(ngModel)]="title" placeholder="title">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2" (input)="Search()" [(ngModel)]="author" placeholder="author">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2" (input)="Search()" [(ngModel)]="genre" placeholder="genre">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearch()" [(ngModel)]="search" placeholder="Search by title or author or genre">
     </div>
 </div>
 <div class="alert alert-danger mt-2" *ngIf="errorDeleteAlert">
@@ -18,33 +28,11 @@
     <button class="close" (click)="successDeleteAlert=!successDeleteAlert">x</button>
     <strong>Success!</strong> Book is deleted
 </div>
-<!-- <table class="table table-dark table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let book of bookList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}">
-            <td>{{book.title}}</td>
-            <td>{{book.author}}</td>
-            <td>{{book.genre}}</td>
-            <td>
-                <a [routerLink]="['/books',book._id,'edit']"><button class="btn btn-primary mr-2">Edit</button></a>
-                <button type="button" class="btn btn-danger" (click)="onOpenModal(book._id)">
-                    Delete
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table> -->
+
 <div class="card-deck">
-    <div class="card text-white bg-dark col-2" *ngFor="let book of bookList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}" >
+    <div class="card text-white bg-dark col-xl-2" *ngFor="let book of bookList |paginate:{itemsPerPage:5,currentPage : p,totalItems: numberOfItems}" >
         <br>
-        <img class="card-img" src="../../assets/bookcover.png" alt="Card image cap">
+        <img class="card-img" (click)="onBookDetails(book._id)" height="220" [src]="book.coverImage" alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title text-center">{{book.title}}</h5>
             <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
@@ -53,30 +41,15 @@
         <button type="button" class="btn btn-outline-danger mb-2" (click)="onOpenModal(book._id)">
             Delete
         </button>
+        <!-- <button type="button" class="btn btn-outline-info mb-3" (click)="onBookDetails(book._id)">
+            Book Details
+        </button> -->
     </div>
 </div>
 <br>
 <pagination-controls (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
 <br>
 <hr>
-<div class="alert alert-success mt-2" *ngIf="successAddAlert">
-    <button class="close" (click)="successAddAlert=!successAddAlert">x</button>
-    <strong>Success!</strong> Book Added
-</div>
-<div class="alert alert-danger mt-2" *ngIf="errorAddAlert">
-    <button class="close" (click)="errorAddAlert=!errorAddAlert">x</button>
-    <strong>Error!</strong> Network error
-</div>
-
-<button type="button" class="btn btn-info" (click)="onOpenAddModal()">
-    Add single book
-</button>
-
-<br><br>
-
-<button type="button" class="btn btn-info" (click)="onOpenUploadModal()">
-    Add multiple books
-</button>
 
 <!-- Confirmation for delete -->
 <div class="modal" [ngStyle]="{'display':display}" tabindex="-1" role="dialog">
@@ -126,7 +99,6 @@
               </div>
               <form (ngSubmit)="onAddBook(f1)" #f1="ngForm">
             <div class="modal-body">
-                
                     <div class="row form-group">
                         <div class="col-3">
                             <label for="title">Title :</label>
@@ -149,6 +121,22 @@
                         </div>
                         <div class="col-9">
                             <input type="text" id="genre" class="form-control" name="genre" ngModel required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="summary">Summary :</label>
+                        </div>
+                        <div class="col-9">
+                            <textarea rows="5" type="text" id="summary" class="form-control" name="summary" ngModel required></textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-3">
+                            <label for="image">Book Cover:</label>
+                        </div>
+                        <div class="col-9">
+                            <input type="file" name="coverImage" id="image" (change)="getBase64($event)" accept="image/*" ngModel required>
                         </div>
                     </div>
             </div>

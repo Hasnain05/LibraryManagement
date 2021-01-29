@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
 import { RouterModule, Routes } from '@angular/router';
+import { NgxSpinnerModule } from "ngx-spinner";
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider} from 'angularx-social-login';
 
 import { AppComponent } from './app.component';
@@ -64,7 +65,8 @@ const appRoutes: Routes = [
     Ng2OrderModule,
     RouterModule.forRoot(appRoutes),
     NgbModule,
-    SocialLoginModule
+    SocialLoginModule,
+    NgxSpinnerModule
   ],
   providers: [{
     provide: AuthServiceConfig,
