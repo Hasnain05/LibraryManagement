@@ -1,8 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from '../users.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 
 @Component({
@@ -27,8 +28,9 @@ export class UsersComponent implements OnInit {
   page="admin"
   token;
   addDisplay = 'none';
+  modalRef: BsModalRef;
 
-  constructor(private usersService: UsersService,public router:Router) { }
+  constructor(private modalService: BsModalService,private usersService: UsersService,public router:Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token')
@@ -72,11 +74,8 @@ export class UsersComponent implements OnInit {
     this.usersService.addUser(user,this.token).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
+    this.modalRef.hide();
   } 
-
-  onOpenAddModal(){
-    this.addDisplay='block';
-  }
 
   onPageChanged(page){
     this.p = page
@@ -96,16 +95,16 @@ export class UsersComponent implements OnInit {
     this.usersService.deleteUser(this.deleteId,this.token).subscribe((data)=>{this.ngOnInit();this.successDeleteAlert=true;},(error: HttpErrorResponse) => {
       this.errorDeleteAlert = true;
     })
-    this.display='none';
+    this.modalRef.hide();
   }
 
-  onOpenModal(id){
+  onOpenModal(id,template: TemplateRef<any>){
     this.deleteId = id;
-    this.display='block';
+    this.modalRef = this.modalService.show(template);
   }
 
-  onCloseModal(){
-    this.display='none';
-  }
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+ }
 }
 

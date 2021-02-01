@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BooksService } from '../books.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { toBase64String } from '@angular/compiler/src/output/source_map';
 
 @Component({
@@ -31,13 +32,18 @@ export class BooksComponent implements OnInit {
   page='admin';
   token;
 
+  modalRef: BsModalRef;
+
   products = [];
   uploadDisplay='none';
   addMultipleBookStatus=true;
+  countSuccessBooks = 0;
+  successAddMultipleAlert = false;
   base64Image;
   imagePath;
 
-  constructor(private booksService: BooksService,public router: Router,private _sanitizer: DomSanitizer) { }
+
+  constructor(private booksService: BooksService,public router: Router,private _sanitizer: DomSanitizer,private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
@@ -63,37 +69,15 @@ export class BooksComponent implements OnInit {
     this.booksService.addBook(book,this.token).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {
       this.errorAddAlert = true;
     });
+    this.modalRef.hide();
   } 
 
   onDeleteBook(){
     this.booksService.deleteBook(this.deleteId,this.token).subscribe((data)=>{this.ngOnInit(); this.successDeleteAlert = true; },(error: HttpErrorResponse) => {
       this.errorDeleteAlert = true;
     });
-    this.display='none';
+    this.modalRef.hide();
   }
-
-  /* Search(){
-    let url = "http://localhost:3000/books?";
-    let countUrl = "http://localhost:3000/books/count?";
-    if(this.title){
-      url = url + "title=" + this.title;
-      countUrl = countUrl + "title=" + this.title;
-    }
-    if(this.author){
-      url = url + "&author=" + this.author;
-      countUrl = countUrl + "&author=" + this.author;
-    }
-    if(this.genre){
-      url = url + "&genre=" + this.genre;
-      countUrl = countUrl + "&genre=" + this.genre;
-    }
-    this.booksService.getBook(countUrl).
-      subscribe((data) => this.assignCount(data))
-    url = url + "&limit=5"
-    this.booksService.getBook(url).
-      subscribe((data) => this.bookList = data)
-    this.p = 1
-  } */
 
   onSearch(){
     let url = "http://localhost:3000/search/books?";
@@ -110,9 +94,9 @@ export class BooksComponent implements OnInit {
     this.p = 1
   }
 
-  onOpenModal(id){
+  onOpenModal(id,template: TemplateRef<any>){
     this.deleteId = id;
-    this.display='block';
+    this.modalRef = this.modalService.show(template);
   }
 
   onOpenUploadModal(){
@@ -124,10 +108,12 @@ export class BooksComponent implements OnInit {
   }
 
   onAddMultipleBooks(){
+    this.countSuccessBooks = 0;
     for(let i=0;i<this.products.length;i++){
-      this.booksService.addBook(this.products[i],this.token).subscribe((data) => {  this.ngOnInit()}, (error: HttpErrorResponse) => {});
+      this.booksService.addBook(this.products[i],this.token).subscribe((data) => {  this.ngOnInit(); this.countSuccessBooks++;}, (error: HttpErrorResponse) => {});
     }
-    this.uploadDisplay='none';
+    this.modalRef.hide();
+    this.successAddMultipleAlert = true;
   }
 
   onPageChanged(page){
@@ -185,5 +171,9 @@ export class BooksComponent implements OnInit {
       me.base64Image = reader.result;
     };
   }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+ }
 
 }

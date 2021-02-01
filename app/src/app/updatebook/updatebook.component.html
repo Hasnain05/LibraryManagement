@@ -36,7 +36,10 @@
         <div class="col-3">
             <label for="image">Book Cover:</label>
         </div>
-        <div class="col-9">
+        <div class="col-1">
+            <img [src]="base64Image" height="100" width="60">
+        </div>
+        <div class="col-6">
             <input type="file" name="coverImage" id="image" (change)="getBase64($event)" accept="image/*" ngModel>
         </div>
     </div>

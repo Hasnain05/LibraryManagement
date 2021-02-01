@@ -43,6 +43,7 @@ export class UpdatebookComponent implements OnInit {
     this.author = data.author;
     this.genre = data.genre;
     this.summary = data.summary;
+    this.base64Image = data.coverImage;
   }
 
   onUpdateBook(form: NgForm) {

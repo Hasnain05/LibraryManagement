@@ -24,6 +24,7 @@
     "angularx-social-login": "^2.3.0",
     "bootstrap": "^4.5.3",
     "ng2-order-pipe": "^0.1.5",
+    "ngx-bootstrap": "^6.2.0",
     "ngx-pagination": "^5.0.0",
     "ngx-spinner": "^10.0.1",
     "rxjs": "~6.6.0",

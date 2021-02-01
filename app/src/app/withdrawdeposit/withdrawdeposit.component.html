@@ -1,29 +1,26 @@
 <h2>Books with User</h2>
 <div class="row">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="titleU" placeholder="title">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="authorU" placeholder="author">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"  (input)="SearchU()" [(ngModel)]="genreU" placeholder="genre">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchU()" [(ngModel)]="searchU" placeholder="Search by title or author or genre">
     </div>
 </div>
-<div class="card text-white bg-dark col-2" *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}" >
-    <br>
-    <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
-    <div class="card-body">
-        <h5 class="card-title text-center">{{book.title}}</h5>
-        <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+<div class="card-deck">
+    <div class="card text-white bg-dark col-2"
+        *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}">
+        <br>
+        <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{book.title}}</h5>
+            <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+        </div>
+        <button type="button" class="btn btn-danger mb-2" (click)="onOpenModal(book._id,template)">
+            Deposit
+        </button>
+        <button type="button" class="btn btn-outline-info" (click)="onBookDetails(book._id)">
+            Book Details
+        </button>
+        <br>
     </div>
-    <button type="button" class="btn btn-danger mb-2" (click)="onOpenModal(book._id)">
-        Deposit
-    </button>
-    <button type="button" class="btn btn-outline-info" (click)="onBookDetails(book._id)">
-        Book Details
-    </button>
-    <br>
 </div>
 <br>
 <pagination-controls id="userbooks" (pageChange)="onPageChangedU($event)" class="float-right"></pagination-controls>
@@ -31,14 +28,8 @@
 <br>
 <h2>Books in Library</h2>
 <div class="row">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="titleL" placeholder="title">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="authorL" placeholder="author">
-    </div>
-    <div class="col-3">
-        <input type="text" class="form-control mb-2"   (input)="SearchL()" [(ngModel)]="genreL" placeholder="genre">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchL()" [(ngModel)]="searchL" placeholder="Search by title or author or genre">
     </div>
 </div>
 <div class="card-deck">
@@ -49,7 +40,7 @@
             <h5 class="card-title text-center">{{book.title}}</h5>
             <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
         </div>
-        <button type="button" class="btn btn-success mb-2" (click)="onOpenModalL(book._id)">
+        <button type="button" class="btn btn-success mb-2" (click)="onOpenModalL(book._id,template2)">
             Withdraw
         </button>
         <button type="button" class="btn btn-outline-info" (click)="onBookDetails(book._id)">
@@ -63,32 +54,37 @@
 <br>
 <a [routerLink]="['/users']"><button class="btn btn-info">Back</button></a>
 
-<!-- Confirmation for deposit -->
-<div class="modal" [ngStyle]="{'display':display}" id="exampleModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                Are you sure you want to deposit?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="onCloseModal()">Close</button>
-                <button type="button" class="btn btn-danger" (click)="onDepositUser()">Deposit Book</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Confirmation for withdrawl -->
-<div class="modal" [ngStyle]="{'display':displayL}" id="exampleModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                Are you sure you want to withdraw?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="onCloseModalL()">Close</button>
-                <button type="button" class="btn btn-success" (click)="onWithdrawUser()">Withdraw Book</button>
-            </div>
-        </div>
+<ng-template #template2>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Withdraw Book</h4>
+       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">×</span>
+       </button>
     </div>
-</div>
+    <div class="modal-body">
+        Are you sure you want to withdraw?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="onWithdrawUser()">Withdraw Book</button>
+    </div>
+ </ng-template>
+
+ <!-- Confirmation for deposit -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit Book</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to deposit?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-danger" (click)="onDepositUser()">Deposit Book</button>
+    </div>
+
+</ng-template>

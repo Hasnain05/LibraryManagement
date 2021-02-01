@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BooksService } from '../books.service';
 import { UsersService } from '../users.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-withdrawdeposit',
@@ -15,6 +17,7 @@ export class WithdrawdepositComponent implements OnInit {
   titleU;
   authorU;
   genreU;
+  searchU;
   bookListUser;
   pU:number=1;
   numberOfItemsU;
@@ -24,6 +27,7 @@ export class WithdrawdepositComponent implements OnInit {
   titleL;
   authorL;
   genreL;
+  searchL;
   bookListLibrary;
   pL:number=1;
   numberOfItemsL;
@@ -31,8 +35,9 @@ export class WithdrawdepositComponent implements OnInit {
   withdrawId;
   token;
 
+  modalRef: BsModalRef;
 
-  constructor(private route:ActivatedRoute, private usersService:UsersService,public router:Router) { }
+  constructor(private modalService: BsModalService,private route:ActivatedRoute, private usersService:UsersService,private booksService:BooksService,public router:Router) { }
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
@@ -64,83 +69,58 @@ export class WithdrawdepositComponent implements OnInit {
     this.numberOfItemsL = data.count;
   }
 
-  onOpenModal(id){
+  onOpenModal(id,template: TemplateRef<any>){
     this.depositId = id;
-    this.display='block';
+    this.modalRef = this.modalService.show(template);
   }
 
   onDepositUser(){
     let url = "http://localhost:3000/"+this.id+"/books/deposit/"+this.depositId;
     this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
-    this.display='none';
+    this.modalRef.hide();
   }
 
-  onCloseModal(){
-    this.display='none';
-  }
-
-  onOpenModalL(id){
+  onOpenModalL(id,template: TemplateRef<any>){
     this.withdrawId = id;
-    this.displayL='block';
+    this.modalRef = this.modalService.show(template);
   }
 
   onWithdrawUser(){
     let url = "http://localhost:3000/"+this.id+"/books/withdraw/"+this.withdrawId;
     this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
-    this.displayL='none';
-    
-  }
-
-  onCloseModalL(){
-    this.displayL='none';
-  }
-
-  SearchU(){
-    let url = "http://localhost:3000/books?user="+this.id;
-    let countUrl = "http://localhost:3000/books/count?user="+this.id;
-    if(this.titleU){
-      url = url + "&title=" + this.titleU;
-      countUrl = countUrl + "&title=" + this.titleU;
-    }
-    if(this.authorU){
-      url = url + "&author=" + this.authorU;
-      countUrl = countUrl + "&author=" + this.authorU;
-    }
-    if(this.genreU){
-      url = url + "&genre=" + this.genreU;
-      countUrl = countUrl + "&genre=" + this.genreU;
-    }
-    this.usersService.getUser(countUrl).
-      subscribe((data) => this.assignCountU(data))
-    url = url + "&limit=5"
-    this.usersService.getUser(url).
-      subscribe((data) => this.bookListUser = data)
-    this.pU = 1
+    this.modalRef.hide();
   }
 
   onBookDetails(id){
     this.router.navigate(['/books',id,'details']);
   }
 
-  SearchL(){
-    let url = "http://localhost:3000/books?assigned=false";
-    let countUrl = "http://localhost:3000/books/count?assigned=false";
-    if(this.titleL){
-      url = url + "&title=" + this.titleL;
-      countUrl = countUrl + "&title=" + this.titleL;
+  onSearchU(){
+    let url = "http://localhost:3000/search/books?user="+this.id;
+    let countUrl = "http://localhost:3000/search/books/count?user="+this.id;
+    if(this.searchU){
+      url = url + "&search=" + this.searchU;
+      countUrl = countUrl + "&search=" + this.searchU;
     }
-    if(this.authorL){
-      url = url + "&author=" + this.authorL;
-      countUrl = countUrl + "&author=" + this.authorL;
+    this.booksService.getBook(countUrl).
+      subscribe((data) => this.assignCountU(data))
+    url = url + "&limit=5"
+    this.booksService.getBook(url).
+      subscribe((data) => this.bookListUser = data)
+    this.pU = 1
+  }
+
+  onSearchL(){
+    let url = "http://localhost:3000/search/books?assigned=false";
+    let countUrl = "http://localhost:3000/search/books/count?assigned=false";
+    if(this.searchL){
+      url = url + "&search=" + this.searchL;
+      countUrl = countUrl + "&search=" + this.searchL;
     }
-    if(this.genreL){
-      url = url + "&genre=" + this.genreL;
-      countUrl = countUrl + "&genre=" + this.genreL;
-    }
-    this.usersService.getUser(countUrl).
+    this.booksService.getBook(countUrl).
       subscribe((data) => this.assignCountL(data))
     url = url + "&limit=5"
-    this.usersService.getUser(url).
+    this.booksService.getBook(url).
       subscribe((data) => this.bookListLibrary = data)
     this.pL = 1
   }
@@ -148,34 +128,22 @@ export class WithdrawdepositComponent implements OnInit {
   onPageChangedU(page){
     this.pU = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/books?user=" + this.id + "&limit=5&skip=" + skip;
-    if(this.titleU){
-      url = url + "&title=" + this.titleU;
-    } 
-    if(this.authorU){
-      url = url + "&author=" + this.authorU;
+    let url = "http://localhost:3000/search/books?user=" + this.id + "&limit=5&skip=" + skip;
+    if(this.searchU){
+      url = url + "&search=" + this.searchU;
     }
-    if(this.genreU){
-      url = url + "&genre=" + this.genreU;
-    }
-    this.usersService.getUser(url).
+    this.booksService.getBook(url).
       subscribe((data) => this.bookListUser = data)
   }
 
   onPageChangedL(page){
     this.pL = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/books?assigned=false&limit=5&skip=" + skip;
-    if(this.titleL){
-      url = url + "&title=" + this.titleL;
-    } 
-    if(this.authorL){
-      url = url + "&author=" + this.authorL;
+    let url = "http://localhost:3000/search/books?assigned=false&limit=5&skip=" + skip;
+    if(this.searchL){
+      url = url + "&search=" + this.searchL;
     }
-    if(this.genreL){
-      url = url + "&genre=" + this.genreL;
-    }
-    this.usersService.getUser(url).
+    this.booksService.getBook(url).
       subscribe((data) => this.bookListLibrary = data)
   }
 }
