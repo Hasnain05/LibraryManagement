@@ -45,7 +45,7 @@ router.get('/books',async (req,res)=>{
 })
 
 //Common Search Books
-router.get('/search/books',async (req,res)=>{
+router.get('/books/search',async (req,res)=>{
     try{
         const innerMatch = []
         const match = {}
@@ -76,7 +76,7 @@ router.get('/search/books',async (req,res)=>{
 })
 
 //Count Common Search Books
-router.get('/search/books/count',async (req,res)=>{
+router.get('/books/search/count',async (req,res)=>{
     try{
         const innerMatch = []
         const match = {}

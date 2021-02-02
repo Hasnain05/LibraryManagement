@@ -28,8 +28,7 @@ export class UpdateuserComponent implements OnInit {
       this.router.navigate(['/home'])
     }
     this.id = this.route.snapshot.params['id'];
-    let url = "http://localhost:3000/users/" + this.id;
-    this.userService.updateAuthUser(url,{},this.token).subscribe((data) => { 
+    this.userService.updateAuthUser(this.id,{},this.token).subscribe((data) => { 
       this.setTextField(data);
      }, (error: HttpErrorResponse) => {
       
@@ -51,8 +50,7 @@ export class UpdateuserComponent implements OnInit {
       Object.assign(user, { age: value.age });
     if (value.email != "")
       Object.assign(user, { email: value.email });
-    let url = "http://localhost:3000/users/" + this.id;
-    this.userService.updateAuthUser(url,user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    this.userService.updateAuthUser(this.id,user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }

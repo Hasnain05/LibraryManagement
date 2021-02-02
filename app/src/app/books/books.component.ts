@@ -50,11 +50,9 @@ export class BooksComponent implements OnInit {
     if(!this.token){
       this.router.navigate(['/home'])
     }
-    let url = "http://localhost:3000/books?limit=5";
-    let countUrl = "http://localhost:3000/books/count";
-    this.booksService.getBook(countUrl).
+    this.booksService.getAllCountBooks().
       subscribe((data) => this.assignCount(data))
-    this.booksService.getBook(url).
+    this.booksService.getAllBooks().
       subscribe((data) => this.bookList = data)
     this.p = 1;
   }
@@ -80,16 +78,9 @@ export class BooksComponent implements OnInit {
   }
 
   onSearch(){
-    let url = "http://localhost:3000/search/books?";
-    let countUrl = "http://localhost:3000/search/books/count?";
-    if(this.search){
-      url = url + "search=" + this.search;
-      countUrl = countUrl + "search=" + this.search;
-    }
-    this.booksService.getBook(countUrl).
+    this.booksService.searchAllCountBooks(this.search,-1).
       subscribe((data) => this.assignCount(data))
-    url = url + "&limit=5"
-    this.booksService.getBook(url).
+    this.booksService.searchAllBooks(this.search,-1).
       subscribe((data) => this.bookList = data)
     this.p = 1
   }
@@ -119,11 +110,7 @@ export class BooksComponent implements OnInit {
   onPageChanged(page){
     this.p = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/search/books?limit=5&skip=" + skip;
-    if(this.search){
-      url = url + "&search=" + this.search;
-    }
-    this.booksService.getBook(url).
+    this.booksService.searchAllBooks(this.search,skip).
       subscribe((data) => this.bookList = data)
   }
 

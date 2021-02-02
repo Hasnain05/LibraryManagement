@@ -59,11 +59,10 @@ export class AccountuserComponent implements OnInit {
     if(!this.token){
       this.router.navigate(['/home'])
     }
-    const url = "http://localhost:3000/users/me";
-    this.usersService.getAuthUser(url,this.token).subscribe((data)=>{
+    this.usersService.getSelfDetails(this.token).subscribe((data)=>{
       this.assign(data);
     },(error)=>{
-      //something here
+      this.router.navigate(['/home'])
     })
   }
 
@@ -72,17 +71,13 @@ export class AccountuserComponent implements OnInit {
     this.age = data.age;
     this.email = data.email;
     this.id = data._id;
-    let countUrlL = "http://localhost:3000/books/count?assigned=false";
-    let urlL = "http://localhost:3000/books?assigned=false&limit=5";
-    let countUrlU = "http://localhost:3000/books/count?user=" + this.id;
-    let urlU = "http://localhost:3000/books?user=" + this.id + "&limit=5";
-    this.usersService.getUser(countUrlL).
+    this.booksService.getCountBookWithLibrary().
       subscribe((data) => this.assignCountL(data))
-    this.usersService.getUser(urlL).
+    this.booksService.getBookWithLibrary().
       subscribe((data) => this.bookListLibrary = data)
-    this.usersService.getUser(countUrlU).
+    this.booksService.getCountBookWithUser(this.id).
       subscribe((data) => this.assignCountU(data))
-    this.usersService.getUser(urlU).
+    this.booksService.getBookWithUser(this.id).
       subscribe((data) => this.bookListUser = data)
     this.pU = 1;
     this.pL = 1;
@@ -102,8 +97,7 @@ export class AccountuserComponent implements OnInit {
   }
 
   onDepositUser(){
-    let url = "http://localhost:3000/me/books/deposit/"+this.depositId;
-    this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
+    this.usersService.depositBook(this.depositId,this.token).subscribe((data)=>{this.ngOnInit();})
     this.modalRef.hide();
   }
 
@@ -113,8 +107,7 @@ export class AccountuserComponent implements OnInit {
   }
 
   onWithdrawUser(){
-    let url = "http://localhost:3000/me/books/withdraw/"+this.withdrawId;
-    this.usersService.updateAuthUser(url,{},this.token).subscribe((data)=>{this.ngOnInit();})
+    this.usersService.withdrawBook(this.withdrawId,this.token).subscribe((data)=>{this.ngOnInit();})
     this.modalRef.hide();
   }
 
@@ -127,8 +120,7 @@ export class AccountuserComponent implements OnInit {
       Object.assign(user, { age: value.age });
     if (value.email != "")
       Object.assign(user, { email: value.email });
-    const url = "http://localhost:3000/users/me";
-    this.usersService.updateAuthUser(url,user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    this.usersService.updateSelfDetails(user,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
     this.ngOnInit();
@@ -136,31 +128,17 @@ export class AccountuserComponent implements OnInit {
   }
 
   onSearchU(){
-    let url = "http://localhost:3000/search/books?user="+this.id;
-    let countUrl = "http://localhost:3000/search/books/count?user="+this.id;
-    if(this.searchU){
-      url = url + "&search=" + this.searchU;
-      countUrl = countUrl + "&search=" + this.searchU;
-    }
-    this.booksService.getBook(countUrl).
+    this.booksService.searchCountBooksWithUser(this.searchU,this.id,-1).
       subscribe((data) => this.assignCountU(data))
-    url = url + "&limit=5"
-    this.booksService.getBook(url).
+    this.booksService.searchBooksWithUser(this.searchU,this.id,-1).
       subscribe((data) => this.bookListUser = data)
     this.pU = 1
   }
 
   onSearchL(){
-    let url = "http://localhost:3000/search/books?assigned=false";
-    let countUrl = "http://localhost:3000/search/books/count?assigned=false";
-    if(this.searchL){
-      url = url + "&search=" + this.searchL;
-      countUrl = countUrl + "&search=" + this.searchL;
-    }
-    this.booksService.getBook(countUrl).
+    this.booksService.searchCountBooksWithLibrary(this.searchL,-1).
       subscribe((data) => this.assignCountL(data))
-    url = url + "&limit=5"
-    this.booksService.getBook(url).
+    this.booksService.searchBooksWithLibrary(this.searchL,-1).
       subscribe((data) => this.bookListLibrary = data)
     this.pL = 1
   }
@@ -168,22 +146,14 @@ export class AccountuserComponent implements OnInit {
   onPageChangedU(page){
     this.pU = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/search/books?user=" + this.id + "&limit=5&skip=" + skip;
-    if(this.searchU){
-      url = url + "&search=" + this.searchU;
-    }
-    this.booksService.getBook(url).
+    this.booksService.searchBooksWithUser(this.searchU,this.id,skip).
       subscribe((data) => this.bookListUser = data)
   }
 
   onPageChangedL(page){
     this.pL = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/search/books?assigned=false&limit=5&skip=" + skip;
-    if(this.searchL){
-      url = url + "&search=" + this.searchL;
-    }
-    this.booksService.getBook(url).
+    this.booksService.searchBooksWithLibrary(this.searchL,skip).
       subscribe((data) => this.bookListLibrary = data)
   }
 
@@ -223,7 +193,7 @@ export class AccountuserComponent implements OnInit {
     this.summary=data.ParsedResults[0].ParsedText;
   }
 
-  onAddBook(form:NgForm){
+  onDonateBook(form:NgForm){
     const book = form.value;
     book.coverImage = this.base64Image;
     this.booksService.addBook(book,this.token).subscribe((data) => { this.successAddAlert = true; this.ngOnInit(); }, (error: HttpErrorResponse) => {

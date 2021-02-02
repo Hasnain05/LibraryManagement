@@ -27,8 +27,7 @@ export class BooksdetailsComponent implements OnInit {
     if(!this.token){
       this.router.navigate(['/home'])
     }
-    let url = "http://localhost:3000/books/" + this.id;
-    this.booksService.getBook(url).subscribe((data) => { 
+    this.booksService.getSingleBook(this.id).subscribe((data) => { 
       this.setTextField(data);
      }, (error: HttpErrorResponse) => {
       

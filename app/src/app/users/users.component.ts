@@ -37,11 +37,9 @@ export class UsersComponent implements OnInit {
     if(!this.token){
       this.router.navigate(['/home'])
     }
-    let url = "http://localhost:3000/users?limit=5";
-    let countUrl = "http://localhost:3000/users/count";
-    this.usersService.getAuthUser(countUrl,this.token).
+    this.usersService.getAllCountUsers(this.token).
       subscribe((data) => this.assignCount(data))
-    this.usersService.getAuthUser(url,this.token).
+    this.usersService.getAllUsers(this.token).
       subscribe((data) => this.userList = data)
     this.p = 1;
   }
@@ -51,20 +49,9 @@ export class UsersComponent implements OnInit {
   }
 
   Search(){
-    let url = "http://localhost:3000/users?";
-    let countUrl = "http://localhost:3000/users/count?";
-    if(this.name){
-      url = url + "name=" + this.name;
-      countUrl = countUrl + "name=" + this.name;
-    } 
-    if(this.email){
-      url = url + "&email=" + this.email;
-      countUrl = countUrl + "&email=" + this.email;
-    }
-    this.usersService.getAuthUser(countUrl,this.token).
+    this.usersService.searchCountAllUsers(this.token,this.name,this.email).
       subscribe((data) => this.assignCount(data))
-    url = url + "&limit=5"
-    this.usersService.getAuthUser(url,this.token).
+    this.usersService.searchAllUsers(this.token,this.name,this.email,-1).
       subscribe((data) => this.userList = data)
     this.p = 1
   }
@@ -80,14 +67,7 @@ export class UsersComponent implements OnInit {
   onPageChanged(page){
     this.p = page
     let skip = (page-1)*5;
-    let url = "http://localhost:3000/users?limit=5&skip=" + skip;
-    if(this.name){
-      url = url + "&name=" + this.name;
-    } 
-    if(this.email){
-      url = url + "&email=" + this.email;
-    }
-    this.usersService.getAuthUser(url,this.token).
+    this.usersService.searchAllUsers(this.token,this.name,this.email,skip).
       subscribe((data) => this.userList = data)
   }
   

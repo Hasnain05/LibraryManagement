@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
         this.onGoogleLogin(user)
     });
     if(localStorage.getItem('token')){
-      this.usersService.getAuthUser("http://localhost:3000/users/me",localStorage.getItem('token')).subscribe((data)=>{
+      this.usersService.getSelfDetails(localStorage.getItem('token')).subscribe((data)=>{
         this.redirect(data)
       })
     }
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     let body = {
       token: user.idToken
     }
-    this.http.post("http://localhost:3000/login/google",body).subscribe((data)=>{
+    this.usersService.loginGoogle(body).subscribe((data)=>{
       this.login(data);
     },
     (error)=>{
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(form : NgForm){
-    this.http.post("http://localhost:3000/login/user",form.value).subscribe((data)=>{
+    this.usersService.loginCredentials(form.value).subscribe((data)=>{
       this.login(data);
     },
     (error)=>{

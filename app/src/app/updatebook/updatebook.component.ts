@@ -30,8 +30,7 @@ export class UpdatebookComponent implements OnInit {
     if(!this.token){
       this.router.navigate(['/home'])
     }
-    let url = "http://localhost:3000/books/" + this.id;
-    this.booksService.updateBook(url,{},this.token).subscribe((data) => { 
+    this.booksService.getSingleBook(this.id).subscribe((data) => { 
       this.setTextField(data);
      }, (error: HttpErrorResponse) => {
       
@@ -59,8 +58,7 @@ export class UpdatebookComponent implements OnInit {
       Object.assign(book, { summary: value.summary });
     if (value.coverImage != "")
       Object.assign(book, { coverImage: this.base64Image });
-    let url = "http://localhost:3000/books/" + this.id;
-    this.booksService.updateBook(url,book,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
+    this.booksService.updateBook(this.id,book,this.token).subscribe((data) => { this.successUpdateAlert = true; }, (error: HttpErrorResponse) => {
       this.errorUpdateAlert = true;
     });
   }
