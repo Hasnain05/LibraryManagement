@@ -1,0 +1,26 @@
+<div class="container-fluid sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light my-2">
+    <!-- <a class="navbar-brand" [routerLink]="['/users']"> -->
+      <img src="../assets/bookicon.png" width="60" height="50" alt="">
+    <!-- </a> -->
+    <button class="navbar-toggler btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"  aria-expanded="false" aria-label="Toggle navigation" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="navbarTogglerDemo02">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02" [ngbCollapse]="isCollapsed">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a *ngIf="users" class="nav-link" [routerLink]="['/users']">Users</a>
+        </li>
+        <li class="nav-item">
+          <a *ngIf="books" class="nav-link" [routerLink]="['/books']">Books</a>
+        </li>
+      </ul>
+      <button *ngIf="login" class="btn btn-outline-success my-2 my-sm-0" (click)="onLogIn()">Login</button>
+      <button *ngIf="!login" class="btn btn-outline-danger my-2 my-sm-0" (click)="onLogOut()">Logout</button>
+    </div>
+  </nav>
+</div>
+<div class="container">
+  <router-outlet (activate)='onActivate($event)'></router-outlet>
+</div>
+

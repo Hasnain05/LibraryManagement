@@ -1,0 +1,23 @@
+<br>
+<div class="row">
+    <div class="col-4">
+        <img class="rounded bookimg" width="250" height="380" [src]="imagePath" alt="Card image cap">
+        <!-- <button type="button" class="btn btn-danger withdraw">
+            Deposit
+        </button> -->
+    </div>
+    <div class="col-8">
+        <h1 class="text-info font-italic">{{title}}</h1>
+        <h5 class="text-secondary ml-3">- {{author}}</h5>
+        <hr>
+        <h6>Genre : {{genre}}</h6>
+        <hr>
+        <h4 class="mt-4">Summary:</h4>
+        <p class="mt-4">
+            {{summary}}
+        </p>
+    </div>
+</div>
+<br><br>
+<button class="btn btn-info" (click)="onBack()">Back</button>
+<br>

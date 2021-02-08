@@ -1,0 +1,39 @@
+<h2>Edit User</h2>
+<form (ngSubmit)="onUpdateUser(f)" #f="ngForm">
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="name">Name :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="name" class="form-control" [value]="name" name="name" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="age">Age :</label>
+        </div>
+        <div class="col-9">
+            <input type="number" id="age" class="form-control" [value]="age" name="age" ngModel>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-3">
+            <label for="email">Email :</label>
+        </div>
+        <div class="col-9">
+            <input type="text" id="email" class="form-control" [value]="email" name="email" ngModel>
+        </div>
+    </div>
+    <button class="btn btn-success" type="submit" [disabled]="!f.valid">Update User</button>
+    <div class="alert alert-success mt-2" *ngIf="successUpdateAlert">
+        <button class="close" (click)="successUpdateAlert=!successUpdateAlert">x</button>
+        <strong>Success!</strong> User updated
+    </div>
+    <div class="alert alert-danger mt-2" *ngIf="errorUpdateAlert">
+        <button class="close" (click)="errorUpdateAlert=!errorUpdateAlert">x</button>
+        <strong>Error!</strong> Email must be unique or Network error
+    </div>
+</form>
+<br>
+<a [routerLink]="['/users']"><button class="btn btn-info">Back</button></a>
+

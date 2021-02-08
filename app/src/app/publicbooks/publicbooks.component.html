@@ -1,0 +1,47 @@
+<br>
+<div class="row">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearch()" [(ngModel)]="search"
+            placeholder="Search by title or author or genre">
+    </div>
+</div>
+<!-- <table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}">
+            <td>{{book.title}}</td>
+            <td>{{book.author}}</td>
+            <td>{{book.genre}}</td>
+            <td>
+                <button type="button" class="btn btn-success" (click)="onWithdraw()">
+                    Withdraw
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table> -->
+<br>
+<div class="card-deck">
+    <div class="card text-white bg-dark col-2" *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}" >
+        <br>
+        <img class="card-img" height="220" (click)="onWithdraw()" [src]="book.coverImage" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{book.title}}</h5>
+            <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+        </div>
+        <button type="button" class="btn btn-outline-success" (click)="onWithdraw()">
+            Withdraw
+        </button>
+        <br>
+    </div>
+</div>
+<br>
+<pagination-controls id="libbooks" (pageChange)="onPageChanged($event)" class="float-right"></pagination-controls>
+<br><br>

@@ -1,0 +1,90 @@
+<h2>Books with User</h2>
+<div class="row">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchU()" [(ngModel)]="searchU" placeholder="Search by title or author or genre">
+    </div>
+</div>
+<div class="card-deck">
+    <div class="card text-white bg-dark col-2"
+        *ngFor="let book of bookListUser |paginate:{id:'userbooks',itemsPerPage:5,currentPage : pU,totalItems: numberOfItemsU}">
+        <br>
+        <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{book.title}}</h5>
+            <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+        </div>
+        <button type="button" class="btn btn-danger mb-2" (click)="onOpenModal(book._id,template)">
+            Deposit
+        </button>
+        <button type="button" class="btn btn-outline-info" (click)="onBookDetails(book._id)">
+            Book Details
+        </button>
+        <br>
+    </div>
+</div>
+<br>
+<pagination-controls id="userbooks" (pageChange)="onPageChangedU($event)" class="float-right"></pagination-controls>
+<br>
+<br>
+<h2>Books in Library</h2>
+<div class="row">
+    <div class="col-4">
+        <input type="text" class="form-control mb-2" (input)="onSearchL()" [(ngModel)]="searchL" placeholder="Search by title or author or genre">
+    </div>
+</div>
+<div class="card-deck">
+    <div class="card text-white bg-dark col-2" *ngFor="let book of bookListLibrary |paginate:{id:'libbooks',itemsPerPage:5,currentPage : pL,totalItems: numberOfItemsL}" >
+        <br>
+        <img class="card-img" [src]="book.coverImage" height="220" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{book.title}}</h5>
+            <p class="card-text text-center"><small class="text-muted">{{book.author}}</small></p>
+        </div>
+        <button type="button" class="btn btn-success mb-2" (click)="onOpenModalL(book._id,template2)">
+            Withdraw
+        </button>
+        <button type="button" class="btn btn-outline-info" (click)="onBookDetails(book._id)">
+            Book Details
+        </button>
+        <br>
+    </div>
+</div>
+<br>
+<pagination-controls id="libbooks" (pageChange)="onPageChangedL($event)" class="float-right"></pagination-controls>
+<br>
+<a [routerLink]="['/users']"><button class="btn btn-info">Back</button></a>
+
+<!-- Confirmation for withdrawl -->
+<ng-template #template2>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Withdraw Book</h4>
+       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to withdraw?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-success" (click)="onWithdrawUser()">Withdraw Book</button>
+    </div>
+ </ng-template>
+
+ <!-- Confirmation for deposit -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit Book</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to deposit?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+        <button type="button" class="btn btn-danger" (click)="onDepositUser()">Deposit Book</button>
+    </div>
+
+</ng-template>

@@ -1,0 +1,26 @@
+<div class="text-center">
+    <br><br><br><br>
+    <h1 class="text-info">Login</h1>
+    <br>
+</div>
+<div class="alert alert-danger mt-2" *ngIf="errorAlert">
+    <button class="close" (click)="errorAlert=!errorAlert">x</button>
+    <strong>Error!</strong> Invalid email or password
+</div>
+<div class="d-flex justify-content-center form_container">
+<form (ngSubmit)="onLogin(f)" #f="ngForm">
+    <div class="row form-group">
+        <input type="text" id="email" required class="form-control" name="email" placeholder="email" ngModel>
+    </div>
+    <div class="row form-group">
+        <input type="password" id="password" required class="form-control" name="password" placeholder="password" ngModel>
+    </div>
+        <button class="btn btn-success btn1" type="Login" [disabled]="!f.valid">Login</button>
+</form>
+</div>
+<br>
+<div class="text-center">
+    <button type="button" (click)="signIn()" class="btn btn-danger mr-1">Sign In with Google</button>
+</div>
+
+

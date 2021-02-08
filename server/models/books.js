@@ -1,10 +1,7 @@
+const { ObjectID } = require('mongodb')
 const mongoose = require('mongoose')
 
 module.exports = mongoose.model('books',{
-    _id : {
-        type : Number,
-        required : true
-    },
     title : {
         type : String,
         required : true
@@ -17,8 +14,18 @@ module.exports = mongoose.model('books',{
         type : Boolean,
         default : false,
     },
+    user : {
+        type : ObjectID,
+        default : null,
+    },
     author : {
         type : String,
         required : true
+    },
+    coverImage:{
+        type : String
+    },
+    summary:{
+        type : String
     }
 })
